@@ -5,58 +5,37 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import Model.DBConnection;
-
 import com.mysql.jdbc.Connection;
 
-import jspBeans.Item;
-import jspBeans.Notification;
-import jspBeans.Order;
-import jspBeans.Organization;
-import jspBeans.User;
+//jspBeans here (not yet created)
+import objects.User;
+import objects.Product;
+import objects.Transaction;
+import objects.TransactionLineItem;
+import objects.Review;
+import objects.Sale;
 
 public class Model
 {
 
     private static DBConnection db;
-
-    public static User getUser(String user_id, String password)
+    public static User getUser(String username, String password)
     {
         User user = null;
         db = new DBConnection();
-        db.getConnection();
+        java.sql.Connection connection = db.getConnection();
         try
         {
             ResultSet rs;
-            PreparedStatement statement;
-            String query = "SELECT * FROM user WHERE user_id = '" + user_id + "' AND password = '" + password + "'";
-            statement = db.getConnection().prepareStatement(query);
-            rs = statement.executeQuery();
+            PreparedStatement pstmt;
+            String query = "SELECT * FROM user WHERE username = ? AND password = ? ";
+            pstmt = connection.prepareStatement( query );
+			pstmt.setString( 1, username); 
+			pstmt.setString( 2, password);
+			rs = pstmt.executeQuery( );
             if (rs.next())
             {
-                user = new User(rs.getInt("user_id"), rs.getString("first_name"), rs.getString("last_name"), rs.getString("email"), rs.getString("user_type"), rs.getInt("manager_id"), rs.getString("password"));
-            }
-            
-            if (user == null)
-            {
-            query = "SELECT * FROM user WHERE email = '" + user_id + "' AND password = '" + password + "'";
-            statement = db.getConnection().prepareStatement(query);
-            rs = statement.executeQuery();
-            if (rs.next())
-            {
-                user = new User(rs.getInt("user_id"), rs.getString("first_name"), rs.getString("last_name"), rs.getString("email"), rs.getString("user_type"), rs.getInt("manager_id"), rs.getString("password"));
-            }
-            }
-            
-            if (user != null && user.getManager_id() != 0)
-            {
-                query = "SELECT o.org_id, org_name, password FROM manager m, organization o WHERE m.manager_id = '" + user.getManager_id() + "' AND o.org_id = m.org_id";
-                statement = db.getConnection().prepareStatement(query);
-                rs = statement.executeQuery();
-                while (rs.next())
-                {
-                    user.addOrg(new Organization(rs.getInt("org_id"), rs.getString("org_name"), rs.getString("password")));
-                }
+                user = new User(rs.getString("username"), rs.getString("password"), rs.getInt("user_type"), rs.getString("fname"), rs.getString("minitial"), rs.getString("lname"), rs.getString("email"), rs.getString("billing_addr"), rs.getString("shipping_addr"), rs.getString("card_no"));
             }
         } catch (Exception e)
         {
@@ -65,47 +44,690 @@ public class Model
         return user;
     }
     
-    public static User getUser(String user_id)
+    public static User getUser(String username)
     {
         User user = null;
         db = new DBConnection();
-        db.getConnection();
+        java.sql.Connection connection = db.getConnection();
         try
         {
             ResultSet rs;
-            PreparedStatement statement;
-            String query = "SELECT * FROM user WHERE user_id = '" + user_id + "'";
-            statement = db.getConnection().prepareStatement(query);
-            rs = statement.executeQuery();
+            PreparedStatement pstmt;
+            String query = "SELECT * FROM user WHERE username = ? ";
+            pstmt = connection.prepareStatement( query );
+			pstmt.setString( 1, username); 
+			rs = pstmt.executeQuery();
+
             if (rs.next())
             {
-                user = new User(rs.getInt("user_id"), rs.getString("first_name"), rs.getString("last_name"), rs.getString("email"), rs.getString("user_type"), rs.getInt("manager_id"), rs.getString("password"));
+                user = new User(rs.getString("username"), rs.getString("password"), rs.getInt("user_type"), rs.getString("fname"), rs.getString("minitial"), rs.getString("lname"), rs.getString("email"), rs.getString("billing_addr"), rs.getString("shipping_addr"), rs.getString("card_no"));
             }
             
-            if (user == null)
-            {
-            query = "SELECT * FROM user WHERE email = '" + user_id  + "'";
-            statement = db.getConnection().prepareStatement(query);
-            rs = statement.executeQuery();
-            if (rs.next())
-            {
-                user = new User(rs.getInt("user_id"), rs.getString("first_name"), rs.getString("last_name"), rs.getString("email"), rs.getString("user_type"), rs.getInt("manager_id"), rs.getString("password"));
-            }
-            }
-            if (user != null && user.getManager_id() != 0)
-            {
-                query = "SELECT o.org_id, o.org_name, o.password FROM manager m, organization o WHERE m.manager_id = '" + user.getManager_id() + "' AND o.org_id = m.org_id";
-                statement = db.getConnection().prepareStatement(query);
-                rs = statement.executeQuery();
-                while (rs.next())
-                {
-                    user.addOrg(new Organization(rs.getInt("org_id"), rs.getString("org_name"), rs.getString("password")));
-                }
-            }
         } catch (Exception e)
         {
             e.printStackTrace();
         }
         return user;
     }
+
+    public static void addCustomerAccount(User c)
+    {
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "INSERT INTO `talaria_db`.`user` (`username`, `password`, `user_type`, `fname`, `minitial`, `lname`, `email`, `billing_addr`, `shipping_addr`, `card_no`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setString( 1, c.getUsername());
+            pstmt.setString( 2, c.getPassword()); 
+            pstmt.setInt( 3, 1); 
+            pstmt.setString( 4, c.getFirstName()); 
+            pstmt.setString( 5, c.getMiddleInitial()); 
+            pstmt.setString( 6, c.getLastName()); 
+            pstmt.setString( 7, c.getEmail()); 
+            pstmt.setString( 8, c.getBillingAddress()); 
+            pstmt.setString( 9, c.getShippingAddress()); 
+            pstmt.setString( 10, c.getCardNumber());  
+            pstmt.executeUpdate();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addProductManagerAccount(User pm)
+    {
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "INSERT INTO `talaria_db`.`user` (`username`, `password`, `user_type`, `fname`, `minitial`, `lname`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setString( 1, pm.getUsername());
+            pstmt.setString( 2, pm.getPassword()); 
+            pstmt.setInt( 3, 3); 
+            pstmt.setString( 4, pm.getFirstName()); 
+            pstmt.setString( 5, pm.getMiddleInitial()); 
+            pstmt.setString( 6, pm.getLastName()); 
+            pstmt.setString( 7, pm.getEmail()); 
+            pstmt.executeUpdate();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addAccountingManagerAccount(User am)
+    {
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "INSERT INTO `talaria_db`.`user` (`username`, `password`, `user_type`, `fname`, `minitial`, `lname`, `email`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setString( 1, am.getUsername());
+            pstmt.setString( 2, am.getPassword()); 
+            pstmt.setInt( 3, 4); 
+            pstmt.setString( 4, am.getFirstName()); 
+            pstmt.setString( 5, am.getMiddleInitial()); 
+            pstmt.setString( 6, am.getLastName()); 
+            pstmt.setString( 7, am.getEmail()); 
+            pstmt.executeUpdate();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addProduct(Product p)
+    {
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "INSERT INTO product (prod_type, prod_name, prod_desc, prod_price, adder_username) VALUES (?, ?, ?, ?, ?)";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, p.getType()); 
+            pstmt.setString( 2, p.getName()); 
+            pstmt.setString( 3, p.getDescription());
+            pstmt.setDouble(4, p.getPrice());
+            pstmt.setString( 5, p.getAdderUsername());  
+            pstmt.executeUpdate();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteProduct(int id)
+    {
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "DELETE FROM `talaria_db`.`product` WHERE `prod_id`= ? ";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, id);  
+            pstmt.executeUpdate();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void editProduct(int type, String name, String description, Double price, int id)
+    {
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "UPDATE `talaria_db`.`product` SET `prod_type`= ?, `prod_name`= ?, `prod_desc`= ?, `prod_price`= ? WHERE `prod_id`= ? ";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, type); 
+            pstmt.setString( 2, name); 
+            pstmt.setString( 3, description);
+            pstmt.setDouble(4, price);
+            pstmt.setInt( 5, id);  
+            pstmt.executeUpdate();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public static ArrayList<Product> getAllProducts()
+    {
+        Product product = null;
+        ArrayList<Product> product_list = new ArrayList<Product>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT * FROM product";
+            pstmt = connection.prepareStatement( query ); 
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                product = new Product(rs.getInt("prod_id"), rs.getInt("prod_type"), rs.getString("prod_name"), rs.getString("prod_desc"), rs.getDouble("prod_price"), rs.getString("adder_username"));
+                product_list.add(product);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return product_list;
+    }
+    
+    public static ArrayList<Product> getAllProductsByNameAndCateg(String name, int categ) {
+    	Product product = null;
+        ArrayList<Product> product_list = new ArrayList<Product>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            if (categ == 0 && name.equals("")) {
+	            return getAllProducts();
+            }
+            else if (name.equals("")) {
+            	return getAllProductsByCategory(categ);
+            }
+            else if (categ == 0) {
+            	System.out.println("yo");
+            	String query = "SELECT * FROM product WHERE prod_name LIKE ? OR prod_desc LIKE ? ";
+                pstmt = connection.prepareStatement( query );
+                pstmt.setString( 1, "%" + name + "%");
+                pstmt.setString( 2, "%" + name + "%"); 
+                rs = pstmt.executeQuery();
+            }
+            else {
+            	String query = "SELECT * FROM product WHERE (prod_name LIKE ? OR prod_desc LIKE ?) AND prod_type = ? ";
+                pstmt = connection.prepareStatement( query );
+                pstmt.setString( 1, "%" + name + "%");
+                pstmt.setString( 2, "%" + name + "%");
+                pstmt.setInt( 3, categ); 
+                rs = pstmt.executeQuery();
+            }
+
+            while (rs.next())
+            {
+                product = new Product(rs.getInt("prod_id"), rs.getInt("prod_type"), rs.getString("prod_name"), rs.getString("prod_desc"), rs.getDouble("prod_price"), rs.getString("adder_username"));
+                product_list.add(product);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return product_list;
+    }
+
+    public static ArrayList<Product> getAllProductsByName(String name)
+    {
+        Product product = null;
+        ArrayList<Product> product_list = new ArrayList<Product>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT * FROM product WHERE prod_name = ? ";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setString( 1, name); 
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                product = new Product(rs.getInt("prod_id"), rs.getInt("prod_type"), rs.getString("prod_name"), rs.getString("prod_desc"), rs.getDouble("prod_price"), rs.getString("adder_username"));
+                product_list.add(product);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return product_list;
+    }
+
+    public static Product getProductById(int id)
+    {
+        Product product = null;
+//        ArrayList<Product> product_list = new ArrayList<Product>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT * FROM product WHERE prod_id = ? ";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, id); 
+            rs = pstmt.executeQuery();
+
+            if (rs.next())
+            {
+                product = new Product(rs.getInt("prod_id"), rs.getInt("prod_type"), rs.getString("prod_name"), rs.getString("prod_desc"), rs.getDouble("prod_price"), rs.getString("adder_username"));
+//                product_list.add(product);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+//        return product_list;
+        return product;
+    }
+
+    public static ArrayList<Product> getAllProductsByCategory(int category)
+    {
+        Product product = null;
+        ArrayList<Product> product_list = new ArrayList<Product>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT * FROM product WHERE prod_type = ? ";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, category); 
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                product = new Product(rs.getInt("prod_id"), rs.getInt("prod_type"), rs.getString("prod_name"), rs.getString("prod_desc"), rs.getDouble("prod_price"), rs.getString("adder_username"));
+                product_list.add(product);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return product_list;
+    }
+
+    
+    public static Transaction addTransaction(Transaction t)
+    {
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query ="select MAX(trans_id) as last_id from transaction";
+            pstmt = connection.prepareStatement( query );
+            rs = pstmt.executeQuery();
+            rs.next();
+            String lastid = rs.getString("last_id");
+            t.setId(Integer.valueOf(lastid)+1);
+            query = "INSERT INTO `talaria_db`.`transaction` (`trans_id`, `username`, `total`) VALUES (?, ?, ?)";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, t.getId());
+            pstmt.setString( 2, t.getUsername()); 
+            pstmt.setDouble( 3, t.getTotal()); 
+            pstmt.executeUpdate();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return t;
+    }
+
+    public static void addTransactionLineItem(TransactionLineItem t)
+    {
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "INSERT INTO `talaria_db`.`tlineitem` (`trans_id`, `prod_id`, `quantity`, `unit_price`, `line_total`) VALUES (?, ?, ?, ?, ?)";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, t.getTransactionId());
+            pstmt.setInt( 2, t.getProductId()); 
+            pstmt.setInt( 3, t.getQuantity()); 
+            pstmt.setDouble( 4, t.getUnitPrice()); 
+            pstmt.setDouble( 5, t.getLineTotal()); 
+            pstmt.executeUpdate();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addReview(Review r)
+    {
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "INSERT INTO `talaria_db`.`review` (`prod_id`, `stars`, `details`, `username`) VALUES (?, ?, ?, ?)";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, r.getProductId());
+            pstmt.setInt( 2, r.getStars()); 
+            pstmt.setString( 3, r.getDetails()); 
+            pstmt.setString( 4, r.getUsername()); 
+            pstmt.executeUpdate();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void changePassword(String username, String oldpw, String newpw)
+    {
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            PreparedStatement pstmt;
+            String query = "UPDATE user SET password = ? WHERE username = ?";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setString( 1, newpw);
+            pstmt.setString( 2, username);
+            pstmt.executeUpdate();
+            System.out.println("change is coming");
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    
+
+    public static ArrayList<Transaction> getAllTransactions()
+    {
+        Transaction transaction = null;
+        ArrayList<Transaction> transaction_list = new ArrayList<Transaction>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT transaction.trans_id, username, prod_id, quantity, unit_price, line_total, total FROM transaction, tlineitem WHERE transaction.trans_id = tlineitem.trans_id";
+            pstmt = connection.prepareStatement( query );
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                transaction = new Transaction(rs.getInt("trans_id"), rs.getString("username"), rs.getInt("prod_id"), rs.getInt("quantity"), rs.getDouble("unit_price"), rs.getDouble("line_total"), rs.getDouble("total"));
+                transaction_list.add(transaction);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return transaction_list;
+    }
+
+    public static ArrayList<Transaction> getAllTransactionsByType(int type)
+    {
+        Transaction transaction = null;
+        ArrayList<Transaction> transaction_list = new ArrayList<Transaction>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT tr.trans_id, username, tl.prod_id, quantity, unit_price, line_total, total FROM transaction tr, tlineitem tl, product p WHERE tr.trans_id = tl.trans_id AND tl.prod_id = p.prod_id AND prod_type = ? ";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, type);
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                transaction = new Transaction(rs.getInt("trans_id"), rs.getString("username"), rs.getInt("prod_id"), rs.getInt("quantity"), rs.getDouble("unit_price"), rs.getDouble("line_total"), rs.getDouble("total"));
+                transaction_list.add(transaction);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return transaction_list;
+    }
+    
+    public static Transaction getLatestTransactionByUser(String username)
+    {
+        Transaction transaction = null;
+//        ArrayList<Transaction> transaction_list = new ArrayList<Transaction>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT tr.trans_id, username, tl.prod_id, quantity, unit_price, line_total, total FROM transaction tr, tlineitem tl, product p WHERE tr.trans_id = tl.trans_id AND tl.prod_id = p.prod_id AND username = ? ";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setString( 1, username);
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                transaction = new Transaction(rs.getInt("trans_id"), rs.getString("username"), rs.getInt("prod_id"), rs.getInt("quantity"), rs.getDouble("unit_price"), rs.getDouble("line_total"), rs.getDouble("total"));
+//                transaction_list.add(transaction);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return transaction;
+    }
+    
+    public static ArrayList<TransactionLineItem> getTransactionLineItemsByTransId(int id)
+    {
+        TransactionLineItem tlineitem = null;
+        ArrayList<TransactionLineItem> item_list = new ArrayList<TransactionLineItem>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT * FROM tlineitem WHERE tlineitem = ?";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, id);
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                tlineitem = new TransactionLineItem(rs.getInt("trans_id"), rs.getInt("prod_id"), rs.getInt("quantity"), rs.getDouble("unit_price"), rs.getDouble("line_total"));
+                item_list.add(tlineitem);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return item_list;
+    }
+
+    public static ArrayList<Transaction> getAllTransactionsByProduct(int productId)
+    {
+        Transaction transaction = null;
+        ArrayList<Transaction> transaction_list = new ArrayList<Transaction>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT tr.trans_id, username, tl.prod_id, quantity, unit_price, line_total, total FROM transaction tr, tlineitem tl, product p WHERE tr.trans_id = tl.trans_id AND tl.prod_id = p.prod_id AND p.prod_id = ? ";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, productId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                transaction = new Transaction(rs.getInt("trans_id"), rs.getString("username"), rs.getInt("prod_id"), rs.getInt("quantity"), rs.getDouble("unit_price"), rs.getDouble("line_total"), rs.getDouble("total"));
+                transaction_list.add(transaction);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return transaction_list;
+    }
+
+    public static ArrayList<Sale> getAllTotalSalesPerProduct()
+    {
+        Sale sale = null;
+        ArrayList<Sale> sale_list = new ArrayList<Sale>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT tlineitem.prod_id, prod_name, SUM(quantity) AS total_quantity_sold, SUM(line_total) AS total_sales " +
+                            "FROM product, tlineitem " +
+                            "WHERE product.prod_id = tlineitem.prod_id " +
+                            "GROUP BY tlineitem.prod_id " +
+                            "ORDER BY total_sales desc";
+            pstmt = connection.prepareStatement( query );
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                sale = new Sale(rs.getInt("prod_id"), rs.getString("prod_name"), rs.getInt("total_quantity_sold"), rs.getDouble("total_sales"));
+                sale_list.add(sale);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return sale_list;
+    }
+
+    public static ArrayList<Sale> getTotalSalesPerProduct(int id)
+    {
+        Sale sale = null;
+        ArrayList<Sale> sale_list = new ArrayList<Sale>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT tlineitem.prod_id, prod_name, SUM(quantity) AS total_quantity_sold, SUM(line_total) AS total_sales " +
+                            "FROM product, tlineitem " +
+                            "WHERE product.prod_id = tlineitem.prod_id AND prod_id = ? " +
+                            "GROUP BY tlineitem.prod_id " +
+                            "ORDER BY total_sales desc";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, id);
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                sale = new Sale(rs.getInt("prod_id"), rs.getString("prod_name"), rs.getInt("total_quantity_sold"), rs.getDouble("total_sales"));
+                sale_list.add(sale);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return sale_list;
+    }
+
+    public static ArrayList<Sale> getAllTotalSalesPerType()
+    {
+        Sale sale = null;
+        ArrayList<Sale> sale_list = new ArrayList<Sale>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT type.name, tlineitem.prod_id, prod_name, SUM(quantity) AS total_quantity_sold, SUM(line_total) AS total_sales" +
+                            "FROM product, tlineitem, type" +
+                            "WHERE product.prod_id = tlineitem.prod_id AND product.prod_type = type.id" +
+                            "GROUP BY type.name, prod_id" + 
+                            "ORDER BY total_quantity_sold desc";
+            pstmt = connection.prepareStatement( query );
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                sale = new Sale(rs.getInt("prod_id"), rs.getString("prod_name"), rs.getInt("total_quantity_sold"), rs.getDouble("total_sales"));
+                sale_list.add(sale);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return sale_list;
+    }
+
+    public static ArrayList<Sale> getTotalSalesPerType(int type)
+    {
+        Sale sale = null;
+        ArrayList<Sale> sale_list = new ArrayList<Sale>();
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT type.name, tlineitem.prod_id, prod_name, SUM(quantity) AS total_quantity_sold, SUM(line_total) AS total_sales" +
+                            "FROM product, tlineitem, type" +
+                            "WHERE product.prod_id = tlineitem.prod_id AND product.prod_type = type.id AND type.id = ?" +
+                            "GROUP BY type.name, prod_id" + 
+                            "ORDER BY total_quantity_sold desc";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, type);
+            rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                sale = new Sale(rs.getInt("prod_id"), rs.getString("prod_name"), rs.getInt("total_quantity_sold"), rs.getDouble("total_sales"));
+                sale_list.add(sale);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return sale_list;
+    }
+
 }
