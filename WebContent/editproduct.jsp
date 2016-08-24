@@ -1,8 +1,8 @@
-<%@page import="jspBeans.Product"%>
-<%@page import="jspBeans.Transaction"%>
-<%@page import="jspBeans.TransactionLineItem"%>
+<%@page import="objects.Product"%>
+<%@page import="objects.Transaction"%>
+<%@page import="objects.TransactionLineItem"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="jspBeans.User"%>
+<%@page import="objects.User"%>
 <%@page import="model.Model"%>
 <html lang="en"><head>
       <meta charset="utf-8">

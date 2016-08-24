@@ -184,11 +184,48 @@
               		<div>
 	                    <form id = "editItem" name = "editItem" action = "EditProduct" method ="post"> 
 	                    	  <h3>Modify Product</h3>
-			                  <input class="btn btn-action" type="submit" value="Edit" name="Edit" id="editprod" />
-			                  </form>
-			                  <button type="button" tabindex="-1" data-toggle="modal" data-target="#confirm-delete" class="btn btn-action">Delete</button>
-			                  <hr>
+          
+            <div class="panel-body">
+            <form id = "editForm" action = "EditProduct" method = "post" class="form-signin">
+                <div class=" row top-margin">
+                  <div class="col-sm-4">
+                    <label class="control-label">Category<span class="text-danger">*</span></label>
+                    <select class = "form-control" name="type" required>
+                    	<%for (int i=0; i < listProdTypes.size(); i++) { 
+                    		if (i+1 == product.getType()) {%>
+                    			<option value= "<%=i+1 %>" selected="selected"><%=listProdTypes.get(i) %></option>
+                    		<% }else {%>
+                    			<option value= "<%=i+1 %>"><%=listProdTypes.get(i) %></option>
+                    	<%}} %>
+                    </select>
+                  </div>
+                  <input type = "hidden" name ="prod_id" id = "prod_id" value ="<%=prod_id%>">
+                  <div class="col-sm-6">
+                    <label class="control-label">Name<span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" name = "prod_name" value = <%=product.getName()%> required>
+                  </div>
+                  <div class="col-sm-6">
+                    <label>Price<span class="text-danger">*</span> </label>
+                    <input type="number" class="form-control" name = "price" id = "unitprice" value=<%=product.getPrice()%> required>
+                  </div>
+                  <div class="col-sm-12">
+                    <label>Description<span class="text-danger">*</span> </label>
+                    <textarea rows = "4" cols = "50" class="form-control" name = "desc" id = "desc" required><%=product.getDescription()%></textarea>
+                  </div>
                 </div>
+                <hr>
+                <div class="row">
+                     <div class="col-lg-8">
+                        <div class="col-lg-12 text-right">
+                        <button class="btn btn-action" type="submit">Edit Product</button>
+                        <button type="button" tabindex="-1" data-toggle="modal" data-target="#confirm-delete" class="btn btn-action">Delete Product</button>
+                        </div>
+                    </div>
+            
+                </div>
+              </form>
+            </div>
+             </div>
               <%} %>
               </div>
           </div><!--/row-->
@@ -204,26 +241,23 @@
 	<script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
 	
 	<!-- Modal -->
-    <div class="modal modal-alert-custom fade" id="delete-product" tabindex="-1" role="dialog" aria-labelledby="checkerLabel1" aria-hidden="true">
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="checkerLabel1" aria-hidden="true" style="height:180px;">
 <!--       <div class="modal-dialog"> -->
         <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
-            <h4 class="modal-title" id="checkerLabel1">Delete Product</h4>
-          </div>
           <div class="modal-body">
             <table class="table">
               <thead>
                 <tr>
-                  <th><%=product.getName()%></th>
+                  <th>Delete Product: <%=product.getName()%></th>
                 </tr>
               </thead>
               <tbody>
               <%if (user != null && user.getUserType() == 3) {%> <!-- 3 -> Product Manager -->
                 <tr>
-                <form action = "deleteProduct" method = "post">
+                <form action = "DeleteProduct" method = "post">
                   <td>Are you sure you want to delete this product?</td>
-                  <td><button class="btn btn-default btn-xs" type="submit" >Yes</button> <button class="btn btn-default btn-xs" type="submit" >No</button></td>
+                  <input type = "hidden" name ="prod_id" id = "prod_id" value ="<%=prod_id%>">
+                  <td><button class="btn btn-default btn-xs" type="submit" >Yes</button> <button class="btn btn-default btn-xs" data-dismiss="modal">No</button></td>
                  </form>
                 </tr>
                 <%} %>
