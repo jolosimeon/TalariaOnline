@@ -49,15 +49,22 @@
       <meta name="author" content="">
 
     <!-- Le styles -->
+    
       <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
       </script>
       <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js">
       </script>
-	  <script src = 'scripts.js'> </script>
 
       <link href="http://fonts.googleapis.com/css?family=Roboto:400,300,700" rel="stylesheet" type="text/css">
       <link href="css/bootplus.css" rel="stylesheet">
+
+	  <script src="js/star-rating.js" type="text/javascript"></script>
+	  <link href="css/star-rating.css" media="all" rel="stylesheet" type="text/css" />
+	  
+	  <script src="js/krajee-theme.js" type="text/javascript"></script>
+	  <link href="css/krajee-theme.css" media="all" rel="stylesheet" type="text/css" />
+	  
       <style type="text/css">
       body {
    
@@ -158,6 +165,7 @@
               <h1><%=product.getName().toUpperCase()%></h1>
               <h3><%=product.getPrice()%></h3>
               <p><%=product.getDescription()%></p>
+              <input id="input-1-ltr-star-xs" name="input-1-ltr-star-xs" class="kv-ltr-theme-uni-star rating-loading" value="<%=product.getAveStars() %>" dir="ltr" data-size="s" data-readonly="true">
             </div>
           </div>
 
@@ -227,8 +235,60 @@
             </div>
              </div>
               <%} %>
+              
               </div>
           </div><!--/row-->
+          
+          <div class = "row-fluid">
+          <div class="panel panel-default">
+          <div class="panel-heading">
+          	<h3 style="color:sienna;">Reviews</h3>
+          </div>
+          <div class="panel-body">
+              <%if (product.getReviewList().size() == 0) { %>
+              <div style="margin-left: 15px;">
+          	  <h2>No Reviews yet!</h2>
+          	  </div>
+          	  <%} else {%>
+          	  <%for (int i = 0; i < product.getReviewList().size(); i++) { %>
+	              <div class="row">
+					<div class="col-sm-1" style="margin-left: 20px;">
+					<div class="thumbnail">
+					<img class="img-responsive user-photo" src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png">
+					</div><!-- /thumbnail -->
+					</div><!-- /col-sm-1 -->
+					
+					<div class="col-sm-8">
+					<div class="panel panel-default">
+					<div class="panel-heading">
+					<strong><%=product.getReviewList().get(i).getUsername() %></strong> <span class="text-muted">reviewed:</span><input class="kv-ltr-theme-uni-star rating-loading" value="<%=product.getReviewList().get(i).getStars()%>" dir="ltr" data-size="s" data-readonly="true">
+					</div>
+					<div class="panel-body">
+					<%=product.getReviewList().get(i).getDetails() %>
+					</div><!-- /panel-body -->
+					</div><!-- /panel panel-default -->
+					</div><!-- /col-sm-5 -->
+				  </div>
+			  <%}} %>
+			  <%if (Model.boughtItem(user.getUsername(), Integer.valueOf(prod_id))) { %>
+			  <br><br>
+			    <hr>
+			    <div class="col-sm-12">
+			  	<h3>Leave a Review</h3>
+			  	<form id = "addreviewForm" action = "AddReview" method = "post" class="form-signin">
+			  	<input id="new_star" name="new_star" class="kv-ltr-theme-uni-star rating-loading" value="0" dir="ltr" data-size="s" data-step="1">
+			  	<br>
+                    <label>Details<span class="text-danger">*</span></label>
+                    <textarea rows = "4" cols = "50" class="form-control" name = "details" id = "details" placeholder = "Review Details" required></textarea>
+                 	<input type = "hidden" name ="prod_id" id = "prod_id" value ="<%=prod_id%>">
+                    <input type = "hidden" name ="username" id = "username" value ="<%=user.getUsername()%>">
+                 	<button class="btn-primary btn-right btn-action" type = "submit"><a style="color:white">Add Review</a></button>
+                 </form>
+                </div>
+			  <% } %>
+			</div>
+          </div>
+          </div>
         </div><!--/span-->
       </div><!--/row-->
 
@@ -239,7 +299,15 @@
     <!--  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>-->
 	<script src="http://jqueryvalidation.org/files/dist/jquery.validate.min.js"></script>
 	<script src="http://jqueryvalidation.org/files/dist/additional-methods.min.js"></script>
-	
+	<script type="text/javascript" src="js/script.js"></script>
+	<script>
+$(document).on('ready', function(){
+    $('.kv-ltr-theme-uni-star').rating({
+        hoverOnClear: false,
+        theme: 'krajee-uni'
+    });
+});
+</script>
 	<!-- Modal -->
     <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="checkerLabel1" aria-hidden="true" style="height:180px;">
 <!--       <div class="modal-dialog"> -->
@@ -266,7 +334,6 @@
           </div>
         </div>
     </div>
-    
    <!--  <script>
 	$( "#orderItem" ).validate({
 	  rules: {

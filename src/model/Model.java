@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import com.mysql.jdbc.Connection;
 
+
 //jspBeans here (not yet created)
 import objects.User;
 import objects.Product;
@@ -334,6 +335,15 @@ public class Model
 //                product_list.add(product);
             }
             
+            query = "SELECT * FROM review WHERE prod_id = ? ORDER BY id DESC";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setInt( 1, id);
+            rs = pstmt.executeQuery();
+            
+            while (rs.next()) {
+            	product.addReview(new Review(rs.getInt("prod_id"), rs.getInt("stars"), rs.getString("details"), rs.getString("username")));
+            }
+            
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -442,6 +452,14 @@ public class Model
         {
             e.printStackTrace();
         }
+    }
+    
+    public static boolean boughtItem(String username, int prod_id) {
+    	ArrayList<Transaction> transactions = getAllTransactionsByProduct(prod_id);
+    	for (int i = 0; i < transactions.size(); i++)
+    		if (transactions.get(i).getUsername().equals(username))
+    			return true;
+    	return false;
     }
     
     public static void changePassword(String username, String oldpw, String newpw)
@@ -558,7 +576,7 @@ public class Model
         {
             ResultSet rs;
             PreparedStatement pstmt;
-            String query = "SELECT * FROM tlineitem WHERE tlineitem = ?";
+            String query = "SELECT * FROM tlineitem WHERE trans_id = ?";
             pstmt = connection.prepareStatement( query );
             pstmt.setInt( 1, id);
             rs = pstmt.executeQuery();

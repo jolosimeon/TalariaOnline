@@ -127,7 +127,7 @@
 
                     <!--<form style="margin: 0; padding: 0;" action = "searchItems" name = "searchForm">--> <input style = "display:inline;" type="text" name = "searchText" class="navbar-search navbar-searchbar" placeholder="Search Items" id="search-field" onkeyup="searchItems()">
                     <!--table id="complete-table" class="popupBox" /-->
-                    <button style = "display:inline;" type="submit" class="navbar-search navbar-searchbutton"><span class="glyphicon glyphicon-search"></span></button><!--</form>-->
+                    <!--  <button style = "display:inline;" type="submit" class="navbar-search navbar-searchbutton"><span class="glyphicon glyphicon-search"></span></button><!--</form>-->
                     <ul class="navbar-right">
                         <% if (userName != null)
                             {%>

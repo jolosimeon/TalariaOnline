@@ -5,6 +5,8 @@
  */
 package objects;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Kingston
@@ -17,6 +19,7 @@ public class Product
     private String description;
     private Double price;
     private String adderUsername;
+    private ArrayList<Review> reviewList;
 
     public Product(int id, int type, String name, String description, Double price, String adderUsername)
     {
@@ -26,6 +29,7 @@ public class Product
         this.description = description;
         this.price = price;
         this.adderUsername = adderUsername;
+        this.reviewList = new ArrayList<>();
     }
 
     public Product()
@@ -36,6 +40,7 @@ public class Product
         this.description = "";
         this.price = 0.00;
         this.adderUsername = "";
+        this.reviewList = new ArrayList<>();
     }
 
     public int getId()
@@ -98,7 +103,30 @@ public class Product
         this.adderUsername = adderUsername;
     }
     
+    public ArrayList<Review> getReviewList() {
+		return reviewList;
+	}
     
+    public void setReviewList(ArrayList<Review> reviewList) {
+		this.reviewList = reviewList;
+	}
     
+    public void addReview(Review r) {
+    	this.reviewList.add(r);
+    }
+    
+    public int getAveStars() {
+    	int sum = 0;
+    	if (reviewList.size() != 0) {
+    	
+	    	for (int i = 0; i< reviewList.size(); i++) {
+	    		sum += reviewList.get(i).getStars();
+	    	}
+			return sum/reviewList.size();
+    	}
+    	else
+    		return 0;
+    	
+    }
     
 }

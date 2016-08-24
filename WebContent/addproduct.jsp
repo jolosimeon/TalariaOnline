@@ -139,7 +139,7 @@
             <div class="panel-body">
             <h4 class="thin text-center">Add Product</h4>
               <hr>
-            <form id = "signUpForm" action = "AddProduct" method = "post" class="form-signin">
+            <form id = "signUpForm" action = "AddProduct" method = "post" class="form-signin" style="margin:20px">
                 <div class=" row top-margin">
                   <div class="col-sm-4">
                     <label class="control-label">Category<span class="text-danger">*</span></label>
