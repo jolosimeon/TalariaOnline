@@ -101,14 +101,6 @@
              }
              String error = request.getParameter("error");
         %>
-        <%if (error != null) { %>
-			<div class="alert alert-error">
-			   <a href="#" class="close" data-dismiss="alert">
-			      &times;
-			   </a>
-			   <strong>Invalid password!</strong> Error logging to Organization.
-			</div>
-		<%} %>
         <nav class="navbar navbar-custom">
             <div class="container-fluid">
                 <!--  div class="dropdown navbar-header">
@@ -150,7 +142,9 @@
                 </div>
             </div>
         </nav>
-
+<div class="alert alert-success">
+  <strong>Success!</strong> Indicates a successful or positive action.
+</div>
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span3">
@@ -178,6 +172,7 @@
 	                             <li class="nav-header"></li>
 	                             <li class="nav-header">Admin Options</li>
 	                             <li><a href="createaccount.jsp">Create a Manager Account</a></li>
+	                             <li><a href="assign-pw.jsp">Assign Temporary Password</a></li>
 	                             <% } %>
                         </ul>
                     </div><!--/.well -->

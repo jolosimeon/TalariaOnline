@@ -70,6 +70,33 @@ public class Model
         }
         return user;
     }
+    
+    public static ArrayList<User> getAllUsers()
+    {
+        ArrayList<User> users = new ArrayList<>();
+        User user = null;
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "SELECT * FROM user";
+            pstmt = connection.prepareStatement( query ); 
+			rs = pstmt.executeQuery();
+
+            while (rs.next())
+            {
+                user = new User(rs.getString("username"), rs.getString("password"), rs.getInt("user_type"), rs.getString("fname"), rs.getString("minitial"), rs.getString("lname"), rs.getString("email"), rs.getString("billing_addr"), rs.getString("shipping_addr"), rs.getString("card_no"));
+                users.add(user);
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return users;
+    }
 
     public static void addCustomerAccount(User c)
     {
@@ -463,6 +490,24 @@ public class Model
     }
     
     public static void changePassword(String username, String oldpw, String newpw)
+    {
+        db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            PreparedStatement pstmt;
+            String query = "UPDATE user SET password = ? WHERE username = ?";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setString( 1, newpw);
+            pstmt.setString( 2, username);
+            pstmt.executeUpdate();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void changePassword(String username, String newpw)
     {
         db = new DBConnection();
         java.sql.Connection connection = db.getConnection();
