@@ -23,7 +23,7 @@ public class User
     private String billingAddrss;
     private String shippingAddress;
     private String cardNumber;
-    
+   
     private int temppw_status;
     private Date temppw_timestamp;
 
@@ -56,7 +56,6 @@ public class User
         this.billingAddrss = "";
         this.shippingAddress = "";
         this.cardNumber = "";
-        
         this.temppw_status = 0;
         this.temppw_timestamp = null;
     }

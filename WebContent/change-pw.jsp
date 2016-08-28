@@ -88,6 +88,7 @@
   }
  
   User user = Model.getUser(id);
+  String username = user.getUsername();
   %>
         <nav class="navbar navbar-custom">
             <div class="container-fluid">
@@ -162,7 +163,11 @@
 					                  <label>New Password <span class="text-danger">*</span></label>
 					                  <input type="password" class="form-control" name = "newpw" id = "newpw" required>
 					                </div>
+<<<<<<< HEAD
+					                <input type="hidden" name="username" id="username" value= <%=username %>>
+=======
 					                <input type="hidden" name="username" id="username" value=<%=userName %>>
+>>>>>>> 8e8ce03998bf1322f97c25093c03e97de74387ff
 					
 					                <hr>
 					

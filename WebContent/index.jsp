@@ -1,4 +1,3 @@
-
 <%@page import="model.Model"%>
 <%@page import="objects.Product"%>
 <%@page import="java.util.ArrayList"%>

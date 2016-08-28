@@ -69,8 +69,13 @@ public class ChangePassword extends HttpServlet {
 	        response.addCookie(idCookie);
 	        response.addCookie(nameCookie);
         }
-        Model.changePassword(username, oldpw, newpw);
-        response.sendRedirect("index.jsp");
+
+       boolean success = Model.changePassword(username, oldpw, newpw);
+       if(success)
+    	   response.sendRedirect("index.jsp");
+       else
+    	   response.sendRedirect("index.jsp"); // meaning mali ung old password nya what to do
+
 		
 		
 	}

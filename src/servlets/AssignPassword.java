@@ -36,7 +36,7 @@ public class AssignPassword extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Model.changePassword(request.getParameter("username"), request.getParameter("pw"));
+		Model.assignTempPassword(request.getParameter("username"), request.getParameter("pw"));
         response.sendRedirect("assign-pw.jsp");
 	}
 

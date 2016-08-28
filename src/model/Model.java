@@ -3,9 +3,10 @@ package model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,15 +16,8 @@ import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.util.ByteSource;
 
-import com.mysql.jdbc.Connection;
-
-/*http://www.java2s.com/Code/Jar/s/Downloadshiroall121jar.htm*/
-
-
 
 import com.mysql.jdbc.Connection;
-
-
 
 //jspBeans here (not yet created)
 import objects.User;
@@ -88,6 +82,7 @@ public class Model
         {
             e.printStackTrace();
         }
+
         	return user;
     }
     
@@ -120,7 +115,6 @@ public class Model
     public static ArrayList<User> getAllUsers()
     {
     	// includes expired accounts
-    	
         ArrayList<User> users = new ArrayList<>();
         User user = null;
         db = new DBConnection();
@@ -136,6 +130,7 @@ public class Model
             while (rs.next())
             {
                 user = new User(rs.getString("username"), rs.getString("password"), rs.getInt("user_type"), rs.getString("fname"), rs.getString("minitial"), rs.getString("lname"), rs.getString("email"), rs.getString("billing_addr"), rs.getString("shipping_addr"), rs.getString("card_no"), rs.getInt("temppw_status"), rs.getTimestamp("temppw_timestamp"));
+				users.add(user);
             }
             
         } catch (Exception e)
@@ -212,7 +207,7 @@ public class Model
             pstmt.setString( 8, salt.toBase64());
             pstmt.setInt(9, 1); // sets password to temporary
             pstmt.setTimestamp(10, expiry); // for password/account expiration, refer to this +24 hours
-            
+
             pstmt.executeUpdate();
             
         } catch (Exception e)
@@ -574,29 +569,65 @@ public class Model
     	return false;
     }
     
-    public static void changePassword(String username, String oldpw, String newpw)
+    public static String getSalt(String username)
     {
-        db = new DBConnection();
+    	db = new DBConnection();
         java.sql.Connection connection = db.getConnection();
-        try
+        String salt = null;
+    	try
         {
+            ResultSet rs;
             PreparedStatement pstmt;
-            String query = "UPDATE user SET password = ?, temppw_status = 0, temppw_timestamp = ? WHERE username = ?";
+            String query = "SELECT salt FROM user WHERE username = ? ";
             pstmt = connection.prepareStatement( query );
-            pstmt.setString( 1, newpw);
-            pstmt.setString( 2, "");
-            pstmt.setString( 3, username);
-            pstmt.executeUpdate();
-            
-            if (getUser(username).getTemppw_status() == 1){
-            	getUser(username).setTemppw_status(0);
-            	getUser(username).setTemppw_timestamp(null);
+			pstmt.setString( 1, username); 
+			rs = pstmt.executeQuery( );
+            if (rs.next())
+            {
+                salt  = rs.getString("salt");
             }
         } catch (Exception e)
         {
             e.printStackTrace();
         }
+    	return salt;
     }
+    
+    public static boolean changePassword(String username, String oldpw, String newpw)
+    {
+    	System.out.println(username + " ako to");
+    	User user = getUser(username);
+    	byte[] salt =  Base64.getDecoder().decode(getSalt(username));
+    	System.out.println(salt + " salt");
+    	System.out.println(oldpw + "old");
+    	
+    	RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+    	ByteSource newSalt = rng.nextBytes();
+    	String oldHash = new Sha256Hash(oldpw, salt, 1024).toBase64();
+    	String newHash = new Sha256Hash(newpw, newSalt, 1024).toBase64();
+    	
+    	if(user.getPassword().equals(oldHash))
+    	{
+	        db = new DBConnection();
+	        java.sql.Connection connection = db.getConnection();
+	        try
+	        {
+	            PreparedStatement pstmt;
+	            String query = "UPDATE user SET password = ? , salt = ? WHERE username = ?";
+	            pstmt = connection.prepareStatement( query );
+	            pstmt.setString( 1, newHash);
+	            pstmt.setString(2, newSalt.toBase64());
+	            pstmt.setString( 3, username);
+	            pstmt.executeUpdate();
+	        } catch (Exception e)
+	        {
+	            e.printStackTrace();
+	        }
+	        return true;
+    	}
+    	return false;
+    }
+    
     
     public static void assignTempPassword(String username, String newpw)
     {
@@ -892,7 +923,7 @@ public class Model
         }
         return sale_list;
     }
-    
+
     private static void deleteAllExpiredAccounts() {
     	ArrayList<User> users = getAllUsers();
     	boolean delete = false;
