@@ -3,17 +3,21 @@ package model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+
+import org.apache.shiro.crypto.RandomNumberGenerator;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.apache.shiro.util.ByteSource;
 
 import com.mysql.jdbc.Connection;
 
 /*http://www.java2s.com/Code/Jar/s/Downloadshiroall121jar.htm*/
-import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.apache.shiro.util.ByteSource;
-import org.apache.shiro.crypto.RandomNumberGenerator;
-import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 
 
 
@@ -72,13 +76,19 @@ public class Model
 			rs = pstmt.executeQuery( );
             if (rs.next())
             {
-                user = new User(rs.getString("username"), rs.getString("password"), rs.getInt("user_type"), rs.getString("fname"), rs.getString("minitial"), rs.getString("lname"), rs.getString("email"), rs.getString("billing_addr"), rs.getString("shipping_addr"), rs.getString("card_no"));
+                user = new User(rs.getString("username"), rs.getString("password"), rs.getInt("user_type"), rs.getString("fname"), rs.getString("minitial"), rs.getString("lname"), rs.getString("email"), rs.getString("billing_addr"), rs.getString("shipping_addr"), rs.getString("card_no"), rs.getInt("temppw_status"), rs.getTimestamp("temppw_timestamp"));
+                Date now = Calendar.getInstance().getTime();
+                //    	temp password set		 AND	expired
+                if (user.getTemppw_status() == 1 && now.after(user.getTemppw_timestamp())){
+                	user = null;
+                	deleteExpiredAccount(username);
+                }
             }
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        return user;
+        	return user;
     }
     
     public static User getUser(String username)
@@ -97,7 +107,7 @@ public class Model
 
             if (rs.next())
             {
-                user = new User(rs.getString("username"), rs.getString("password"), rs.getInt("user_type"), rs.getString("fname"), rs.getString("minitial"), rs.getString("lname"), rs.getString("email"), rs.getString("billing_addr"), rs.getString("shipping_addr"), rs.getString("card_no"));
+                user = new User(rs.getString("username"), rs.getString("password"), rs.getInt("user_type"), rs.getString("fname"), rs.getString("minitial"), rs.getString("lname"), rs.getString("email"), rs.getString("billing_addr"), rs.getString("shipping_addr"), rs.getString("card_no"), rs.getInt("temppw_status"), rs.getTimestamp("temppw_timestamp"));
             }
             
         } catch (Exception e)
@@ -109,6 +119,8 @@ public class Model
     
     public static ArrayList<User> getAllUsers()
     {
+    	// includes expired accounts
+    	
         ArrayList<User> users = new ArrayList<>();
         User user = null;
         db = new DBConnection();
@@ -123,8 +135,7 @@ public class Model
 
             while (rs.next())
             {
-                user = new User(rs.getString("username"), rs.getString("password"), rs.getInt("user_type"), rs.getString("fname"), rs.getString("minitial"), rs.getString("lname"), rs.getString("email"), rs.getString("billing_addr"), rs.getString("shipping_addr"), rs.getString("card_no"));
-                users.add(user);
+                user = new User(rs.getString("username"), rs.getString("password"), rs.getInt("user_type"), rs.getString("fname"), rs.getString("minitial"), rs.getString("lname"), rs.getString("email"), rs.getString("billing_addr"), rs.getString("shipping_addr"), rs.getString("card_no"), rs.getInt("temppw_status"), rs.getTimestamp("temppw_timestamp"));
             }
             
         } catch (Exception e)
@@ -171,10 +182,17 @@ public class Model
 
     public static void addProductManagerAccount(User pm)
     {
+    	// password hashing
     	RandomNumberGenerator rng = new SecureRandomNumberGenerator();
     	ByteSource salt = rng.nextBytes();
     	String hashedPasswordBase64 = new Sha256Hash(pm.getPassword(), salt, 1024).toBase64();
-
+    	
+    	// temporary password timestamp
+    	Calendar calendar = Calendar.getInstance();
+//    	calendar.add(Calendar.DATE, 1);
+//    	Date expirydate = calendar.getTime();
+    	Date expirydate = new Date(System.currentTimeMillis()+5*60*1000);
+    	Timestamp expiry = new java.sql.Timestamp(expirydate.getTime());
 
         db = new DBConnection();
         java.sql.Connection connection = db.getConnection();
@@ -182,7 +200,7 @@ public class Model
         {
             ResultSet rs;
             PreparedStatement pstmt;
-            String query = "INSERT INTO `talaria_db`.`user` (`username`, `password`, `user_type`, `fname`, `minitial`, `lname`, `email`, `salt`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO `talaria_db`.`user` (`username`, `password`, `user_type`, `fname`, `minitial`, `lname`, `email`, `salt`, `temppw_status`, `temppw_timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             pstmt = connection.prepareStatement( query );
             pstmt.setString( 1, pm.getUsername());
             pstmt.setString( 2, hashedPasswordBase64); 
@@ -192,6 +210,9 @@ public class Model
             pstmt.setString( 6, pm.getLastName()); 
             pstmt.setString( 7, pm.getEmail());
             pstmt.setString( 8, salt.toBase64());
+            pstmt.setInt(9, 1); // sets password to temporary
+            pstmt.setTimestamp(10, expiry); // for password/account expiration, refer to this +24 hours
+            
             pstmt.executeUpdate();
             
         } catch (Exception e)
@@ -202,9 +223,17 @@ public class Model
 
     public static void addAccountingManagerAccount(User am)
     {
+    	// password hashing
     	RandomNumberGenerator rng = new SecureRandomNumberGenerator();
     	ByteSource salt = rng.nextBytes();
     	String hashedPasswordBase64 = new Sha256Hash(am.getPassword(), salt, 1024).toBase64();
+    	
+    	// temporary password timestamp
+    	Calendar calendar = Calendar.getInstance();
+//    	calendar.add(Calendar.DATE, 1);
+//    	Date expirydate = calendar.getTime();
+    	Date expirydate = new Date(System.currentTimeMillis()+5*60*1000);
+    	Timestamp expiry = new java.sql.Timestamp(expirydate.getTime());
 
         db = new DBConnection();
         java.sql.Connection connection = db.getConnection();
@@ -212,7 +241,7 @@ public class Model
         {
             ResultSet rs;
             PreparedStatement pstmt;
-            String query = "INSERT INTO `talaria_db`.`user` (`username`, `password`, `user_type`, `fname`, `minitial`, `lname`, `email`, `salt`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO `talaria_db`.`user` (`username`, `password`, `user_type`, `fname`, `minitial`, `lname`, `email`, `salt`, `temppw_status`, `temppw_timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             pstmt = connection.prepareStatement( query );
             pstmt.setString( 1, am.getUsername());
             pstmt.setString( 2, hashedPasswordBase64); 
@@ -222,6 +251,8 @@ public class Model
             pstmt.setString( 6, am.getLastName()); 
             pstmt.setString( 7, am.getEmail());
             pstmt.setString( 8, salt.toBase64());
+            pstmt.setInt(9, 1); // sets password to temporary
+            pstmt.setTimestamp(10, expiry); // for password/account expiration, refer to this +24 hours
             pstmt.executeUpdate();
             
         } catch (Exception e)
@@ -550,28 +581,43 @@ public class Model
         try
         {
             PreparedStatement pstmt;
-            String query = "UPDATE user SET password = ? WHERE username = ?";
+            String query = "UPDATE user SET password = ?, temppw_status = 0, temppw_timestamp = ? WHERE username = ?";
             pstmt = connection.prepareStatement( query );
             pstmt.setString( 1, newpw);
-            pstmt.setString( 2, username);
+            pstmt.setString( 2, "");
+            pstmt.setString( 3, username);
             pstmt.executeUpdate();
+            
+            if (getUser(username).getTemppw_status() == 1){
+            	getUser(username).setTemppw_status(0);
+            	getUser(username).setTemppw_timestamp(null);
+            }
         } catch (Exception e)
         {
             e.printStackTrace();
         }
     }
     
-    public static void changePassword(String username, String newpw)
+    public static void assignTempPassword(String username, String newpw)
     {
         db = new DBConnection();
         java.sql.Connection connection = db.getConnection();
+        
+     // temporary password timestamp
+    	Calendar calendar = Calendar.getInstance();
+//    	calendar.add(Calendar.DATE, 1);
+//    	Date expirydate = calendar.getTime();
+    	Date expirydate = new Date(System.currentTimeMillis()+5*60*1000);
+    	Timestamp expiry = new java.sql.Timestamp(expirydate.getTime());
+        
         try
         {
             PreparedStatement pstmt;
-            String query = "UPDATE user SET password = ? WHERE username = ?";
+            String query = "UPDATE user SET password = ?, temppw_status = 1, temppw_timetamp = ? WHERE username = ?";
             pstmt = connection.prepareStatement( query );
             pstmt.setString( 1, newpw);
-            pstmt.setString( 2, username);
+            pstmt.setTimestamp(2, expiry);
+            pstmt.setString( 3, username);
             pstmt.executeUpdate();
             System.out.println("change is coming");
         } catch (Exception e)
@@ -846,5 +892,61 @@ public class Model
         }
         return sale_list;
     }
-
+    
+    private static void deleteAllExpiredAccounts() {
+    	ArrayList<User> users = getAllUsers();
+    	boolean delete = false;
+    	for (int i=0; i<users.size(); i++) {
+    		Date now = Calendar.getInstance().getTime();
+            //    	temp password set		 AND	expired
+            if (users.get(i).getTemppw_status() == 1 && now.after(users.get(i).getTemppw_timestamp()))
+            	delete = true;
+            else delete = false;
+            
+            if (delete) {
+            	User user = null;
+            	db = new DBConnection();
+                java.sql.Connection connection = db.getConnection();
+                try
+                {
+                    PreparedStatement pstmt;
+                    String query = "DELETE FROM `talaria_db`.`user` WHERE `username` = ? ";
+                    pstmt = connection.prepareStatement( query );
+        			pstmt.setString( 1, users.get(i).getUsername()); 
+        			pstmt.executeUpdate();
+        			
+                } catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+    	}
+    }
+    
+    private static void deleteExpiredAccount(String username) {
+    	boolean delete = false;
+    	Date now = Calendar.getInstance().getTime();
+    	User user = getUser(username);
+        //    	temp password set		 AND	expired
+        if (user.getTemppw_status() == 1 && now.after(user.getTemppw_timestamp()))
+        	delete = true;
+        else delete = false;
+        
+        if (delete) {
+        	db = new DBConnection();
+            java.sql.Connection connection = db.getConnection();
+            try
+            {
+                PreparedStatement pstmt;
+                String query = "DELETE FROM `talaria_db`.`user` WHERE `username` = ? ";
+                pstmt = connection.prepareStatement( query );
+    			pstmt.setString( 1, username); 
+    			pstmt.executeUpdate();
+    			
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
 }

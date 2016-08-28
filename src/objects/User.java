@@ -5,6 +5,8 @@
  */
 package objects;
 
+import java.util.Date;
+
 /**
  *
  * @author Kingston
@@ -21,8 +23,11 @@ public class User
     private String billingAddrss;
     private String shippingAddress;
     private String cardNumber;
+    
+    private int temppw_status;
+    private Date temppw_timestamp;
 
-    public User(String username, String password, int userType, String firstName, String middleInitial, String lastName, String email, String billingAddrss, String shippingAddress, String cardNumber)
+    public User(String username, String password, int userType, String firstName, String middleInitial, String lastName, String email, String billingAddrss, String shippingAddress, String cardNumber, int temppw_status, Date temppw_timestamp)
     {
         this.username = username;
         this.password = password;
@@ -34,6 +39,9 @@ public class User
         this.billingAddrss = billingAddrss;
         this.shippingAddress = shippingAddress;
         this.cardNumber = cardNumber;
+        
+        this.temppw_status = temppw_status;
+        this.temppw_timestamp = temppw_timestamp;
     }
 
     public User()
@@ -48,6 +56,9 @@ public class User
         this.billingAddrss = "";
         this.shippingAddress = "";
         this.cardNumber = "";
+        
+        this.temppw_status = 0;
+        this.temppw_timestamp = null;
     }
 
     public String getUsername()
@@ -149,6 +160,22 @@ public class User
     {
         this.cardNumber = cardNumber;
     }
+
+	public int getTemppw_status() {
+		return temppw_status;
+	}
+
+	public void setTemppw_status(int temppw_status) {
+		this.temppw_status = temppw_status;
+	}
+
+	public Date getTemppw_timestamp() {
+		return temppw_timestamp;
+	}
+
+	public void setTemppw_timestamp(Date temppw_timestamp) {
+		this.temppw_timestamp = temppw_timestamp;
+	}
     
     
 }
