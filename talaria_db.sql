@@ -1,8 +1,18 @@
+<<<<<<< HEAD
 -- MySQL dump 10.13  Distrib 5.6.17, for Win64 (x86_64)
 --
 -- Host: localhost    Database: talaria_db
 -- ------------------------------------------------------
 -- Server version	5.6.22-log
+=======
+CREATE DATABASE  IF NOT EXISTS `talaria_db` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `talaria_db`;
+-- MySQL dump 10.13  Distrib 5.7.9, for Win64 (x86_64)
+--
+-- Host: localhost    Database: talaria_db
+-- ------------------------------------------------------
+-- Server version	5.6.20
+>>>>>>> 617b89e1980118fbc104c4b91023f034e8dde972
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -57,7 +67,11 @@ CREATE TABLE `review` (
   `details` varchar(500) DEFAULT NULL,
   `username` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
+<<<<<<< HEAD
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+=======
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+>>>>>>> 617b89e1980118fbc104c4b91023f034e8dde972
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +80,11 @@ CREATE TABLE `review` (
 
 LOCK TABLES `review` WRITE;
 /*!40000 ALTER TABLE `review` DISABLE KEYS */;
+<<<<<<< HEAD
 INSERT INTO `review` VALUES (1,444,5,'ssadsd','sdsasd'),(2,102,3,'Amazeballs shoes, must buy!','g'),(3,102,1,'Joke lang, wag na.','g'),(4,102,5,'AYOS MGA SER','jolosimeon'),(5,102,5,'wow','jolosimeon'),(6,102,5,'luto review','g'),(7,102,2,'mahal ata masyado ser','a');
+=======
+INSERT INTO `review` VALUES (1,444,5,'ssadsd','sdsasd'),(2,102,3,'Amazeballs shoes, must buy!','g'),(3,102,1,'Joke lang, wag na.','g'),(4,102,5,'AYOS MGA SER','jolosimeon'),(5,102,5,'wow','jolosimeon'),(6,102,5,'luto review','g');
+>>>>>>> 617b89e1980118fbc104c4b91023f034e8dde972
 /*!40000 ALTER TABLE `review` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,7 +183,10 @@ CREATE TABLE `user` (
   `billing_addr` varchar(300) DEFAULT NULL,
   `shipping_addr` varchar(300) DEFAULT NULL,
   `card_no` varchar(45) DEFAULT NULL,
+<<<<<<< HEAD
   `salt` varchar(45) DEFAULT NULL,
+=======
+>>>>>>> 617b89e1980118fbc104c4b91023f034e8dde972
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -176,6 +197,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+<<<<<<< HEAD
 INSERT INTO `user` VALUES ('a','b',4,'a','a','a','a@y.com','a a, a, a, a a','a a, a, a, a a','122222222222222222222',NULL),('aa','aa',3,'a','a','a','aa',NULL,NULL,NULL,NULL),('acc','acc',3,'acc','acc','cc','acc',NULL,NULL,NULL,NULL),('b','b',2,'b','b','b','b@y.c','b b, b, b, b b','b b, b, b, b b','333333333333333333',NULL),('c','c',3,'c','c','c','c@y.c',NULL,NULL,NULL,NULL),('d','d',3,'d','d','d','d@g.c',NULL,NULL,NULL,NULL),('e','e',4,'a','a','a','e',NULL,NULL,NULL,NULL),('g','g',1,'g','g','g','g@y.c','g g, g, g, g g','g g, g, g, g g','123455555555555555',NULL),('james','abc123',3,'James','K','Sy','james_sy@yahoo.com',NULL,NULL,NULL,NULL),('johncaingles','F+XrfHp9KvMqZJhQ4+cnCzmpHP9VETRRNCnWJPfyl8g=',1,'John','D.','Caingles','jc@gmail.coom','1 bjkbj, kbjkbjk, bjkb, jkb jkb','jkb jk, bjk, bjkbj, kbjk bjk','bjk','spvEyP7nr8sG13zn+rvwdw=='),('jolosimeon','abc123',1,'Juan Lorenzo','L','Simeon','jolo_simoen@gmail.com','85 blah st.','85 blah st.','1234567891234567',NULL),('kingstonkoa','SmES156PlRqVo2ZJh34tLtfWc6NHR57o7BjF1V+jOeo=',1,'Kingston','T.','Koa','kingstonkoa@gmail.com','87 S. Tuano, wla, San Juan, 1500 Philippines','87 S. Tuano, wla, San Juan, 1500 Philippines','165156156156156156156','MxnmA4W2v5AgScftn+pSIQ=='),('p','p',3,'Prod','p','p','p',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -187,6 +209,11 @@ UNLOCK TABLES;
 --
 -- Dumping routines for database 'talaria_db'
 --
+=======
+INSERT INTO `user` VALUES ('a','b',4,'a','a','a','a@y.com','a a, a, a, a a','a a, a, a, a a','122222222222222222222'),('aa','aa',3,'a','a','a','aa',NULL,NULL,NULL),('acc','acc',3,'acc','acc','cc','acc',NULL,NULL,NULL),('b','b',2,'b','b','b','b@y.c','b b, b, b, b b','b b, b, b, b b','333333333333333333'),('c','c',3,'c','c','c','c@y.c',NULL,NULL,NULL),('d','d',3,'d','d','d','d@g.c',NULL,NULL,NULL),('e','e',4,'a','a','a','e',NULL,NULL,NULL),('g','g',1,'g','g','g','g@y.c','g g, g, g, g g','g g, g, g, g g','123455555555555555'),('james','abc123',3,'James','K','Sy','james_sy@yahoo.com',NULL,NULL,NULL),('jolosimeon','abc123',1,'Juan Lorenzo','L','Simeon','jolo_simoen@gmail.com','85 blah st.','85 blah st.','1234567891234567'),('p','p',3,'Prod','p','p','p',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+>>>>>>> 617b89e1980118fbc104c4b91023f034e8dde972
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -197,4 +224,8 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+<<<<<<< HEAD
 -- Dump completed on 2016-08-28 13:00:09
+=======
+-- Dump completed on 2016-08-28  4:44:03
+>>>>>>> 617b89e1980118fbc104c4b91023f034e8dde972

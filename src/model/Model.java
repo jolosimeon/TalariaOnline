@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+
 import java.util.Base64;
 
 import com.mysql.jdbc.Connection;
@@ -13,6 +14,11 @@ import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.crypto.RandomNumberGenerator;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
+
+
+
+import com.mysql.jdbc.Connection;
+
 
 
 //jspBeans here (not yet created)
@@ -133,12 +139,14 @@ public class Model
     	RandomNumberGenerator rng = new SecureRandomNumberGenerator();
     	ByteSource salt = rng.nextBytes();
     	String hashedPasswordBase64 = new Sha256Hash(c.getPassword(), salt, 1024).toBase64();
+
         db = new DBConnection();
         java.sql.Connection connection = db.getConnection();
         try
         {
             ResultSet rs;
             PreparedStatement pstmt;
+
             String query = "INSERT INTO `talaria_db`.`user` (`username`, `password`, `user_type`, `fname`, `minitial`, `lname`, `email`, `billing_addr`, `shipping_addr`, `card_no`, `salt`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             pstmt = connection.prepareStatement( query );
             pstmt.setString( 1, c.getUsername());
@@ -152,6 +160,7 @@ public class Model
             pstmt.setString( 9, c.getShippingAddress()); 
             pstmt.setString( 10, c.getCardNumber());
             pstmt.setString( 11, salt.toBase64());
+
             pstmt.executeUpdate();
             
         } catch (Exception e)
@@ -165,6 +174,8 @@ public class Model
     	RandomNumberGenerator rng = new SecureRandomNumberGenerator();
     	ByteSource salt = rng.nextBytes();
     	String hashedPasswordBase64 = new Sha256Hash(pm.getPassword(), salt, 1024).toBase64();
+
+
         db = new DBConnection();
         java.sql.Connection connection = db.getConnection();
         try
@@ -194,6 +205,7 @@ public class Model
     	RandomNumberGenerator rng = new SecureRandomNumberGenerator();
     	ByteSource salt = rng.nextBytes();
     	String hashedPasswordBase64 = new Sha256Hash(am.getPassword(), salt, 1024).toBase64();
+
         db = new DBConnection();
         java.sql.Connection connection = db.getConnection();
         try
