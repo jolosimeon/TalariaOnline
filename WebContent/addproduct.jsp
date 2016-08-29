@@ -4,6 +4,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="objects.User"%>
 <%@page import="model.Model"%>
+<%@page import="objects.HTMLInputFilter"%>
 <html lang="en"><head>
       <meta charset="utf-8">
       <title>Add a Product</title>
@@ -145,7 +146,7 @@
                     <label class="control-label">Category<span class="text-danger">*</span></label>
                     <select class = "form-control" name="type" required>
                     	<%for (int i=0; i < listProdTypes.size(); i++) { %>
-                    		<option value= "<%=i+1 %>" ><%=listProdTypes.get(i) %></option>
+                    		<option value= "<%= i+1%>" ><%=new HTMLInputFilter().filter(listProdTypes.get(i)) %></option>
                     	<%} %>
                     </select>
                   </div>

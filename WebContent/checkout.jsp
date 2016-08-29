@@ -1,4 +1,5 @@
 <%@page import="model.Model"%>
+<%@page import="objects.HTMLInputFilter"%>
 <html lang="en"><head>
       <meta charset="utf-8">
       <title>Thank you!</title>

@@ -1,3 +1,4 @@
+<%@page import="objects.HTMLInputFilter"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>

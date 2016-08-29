@@ -3,6 +3,7 @@
 <%@page import="objects.TransactionLineItem"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="objects.User"%>
+<%@page import="objects.HTMLInputFilter"%>
 <%@page import="model.Model"%>
 <html lang="en"><head>
       <meta charset="utf-8">
@@ -145,7 +146,7 @@
                     <label class="control-label">Category<span class="text-danger">*</span></label>
                     <select>
                     	<%for (int i=0; i < listProdTypes.size(); i++) { %>
-                    		<option value= "<%listProdTypes.get(i); %>" ></option>
+                    		<option value= "<%new HTMLInputFilter().filter( listProdTypes.get(i)); %>" ></option>
                     	<%} %>
                     </select>
                   </div>

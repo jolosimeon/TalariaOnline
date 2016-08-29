@@ -1,4 +1,5 @@
 <%@page import="java.util.ArrayList"%>
+<%@page import="objects.HTMLInputFilter"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,7 +36,7 @@
                     <label>User Type<span class="text-danger"></span> </label>
                     <select class = "form-control" name="type" required>
                     	<%for (int i=0; i < listUserTypes.size(); i++) { %>
-                    		<option value= "<%=i+1%>" ><%=listUserTypes.get(i)%></option>
+                    		<option value= "<%=i+1%>" ><%=new HTMLInputFilter().filter(listUserTypes.get(i))%></option>
                     	<%} %>
                     </select>
                   </div>

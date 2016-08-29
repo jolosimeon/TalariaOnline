@@ -1,6 +1,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="model.Model"%>
 <%@page import="objects.User"%>
+<%@page import="objects.HTMLInputFilter"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,7 +86,7 @@
 	                <form action = "AssignPassword" method = "post">
 	                  <td><%=users.get(i).getUsername() %></td>
 	                  <td><%=listUserTypes.get(users.get(i).getUserType()-1) %>
-	                  <td><input type="password" required name = "pw"><input type = "hidden" name = "username" value = "<%=users.get(i).getUsername()%>"></td>
+	                  <td><input type="password" required name = "pw"><input type = "hidden" name = "username" value = "<%= new HTMLInputFilter().filter(users.get(i).getUsername())%>"></td>
 	                  <td><button class="btn btn-default btn-xs" type="submit" >Change</button></td>
 	                 </form>
 	                </tr>

@@ -18,6 +18,31 @@ USE `talaria_db`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `log`
+--
+
+DROP TABLE IF EXISTS `log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log` (
+  `idlog` int(11) NOT NULL AUTO_INCREMENT,
+  `log_desc` varchar(200) NOT NULL,
+  `log_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`idlog`)
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log`
+--
+
+LOCK TABLES `log` WRITE;
+/*!40000 ALTER TABLE `log` DISABLE KEYS */;
+INSERT INTO `log` VALUES (1,' Product list was accessed.','2016-08-29 00:30:47'),(2,'annetok logged into the system.','2016-08-29 00:30:56'),(3,'annetok logged into the system.','2016-08-29 00:31:24'),(4,'annetok logged into the system.','2016-08-29 00:31:31'),(5,' Product list was accessed.','2016-08-29 00:31:32'),(6,'annetok got salt.','2016-08-29 00:31:44'),(7,'annetok changed his/her password.','2016-08-29 00:31:45'),(8,' Product list was accessed.','2016-08-29 00:31:45'),(9,'annetok logged into the system.','2016-08-29 00:31:52'),(10,'annetok logged into the system.','2016-08-29 00:31:59'),(11,' Product list was accessed.','2016-08-29 00:31:59'),(12,'annetok Latest transaction was accessed for display.','2016-08-29 00:32:09'),(13,' Product list was accessed.','2016-08-29 00:32:09'),(14,'johncaingles logged into the system.','2016-08-29 00:33:06'),(15,'annetok logged into the system.','2016-08-29 00:33:31'),(16,' Product list was accessed.','2016-08-29 00:33:31'),(17,'annetok Latest transaction was accessed for display.','2016-08-29 00:33:36'),(18,' Product list was accessed.','2016-08-29 00:33:39'),(19,' Admin created a product manager account; prodmgr was added into the system.','2016-08-29 00:34:04'),(20,' Product list was accessed.','2016-08-29 00:34:04'),(21,' Product list was accessed.','2016-08-29 00:34:10'),(22,'prodmgr logged into the system.','2016-08-29 00:35:12'),(23,' Product list was accessed.','2016-08-29 00:35:12'),(24,'prodmgr got salt.','2016-08-29 00:35:43'),(25,'prodmgr changed his/her password.','2016-08-29 00:35:43'),(26,' Product list was accessed.','2016-08-29 00:35:43'),(27,'prodmgr logged into the system.','2016-08-29 00:38:18'),(28,' Product list was accessed.','2016-08-29 00:38:18'),(29,'prodmgr got salt.','2016-08-29 00:38:34'),(30,'prodmgr changed his/her password.','2016-08-29 00:38:34'),(31,' Product list was accessed.','2016-08-29 00:38:36'),(32,'prodmgr logged into the system.','2016-08-29 00:39:43'),(33,' Product list was accessed.','2016-08-29 00:39:43'),(34,' Product list was accessed.','2016-08-29 00:39:52'),(35,'annetok logged into the system.','2016-08-29 00:40:10'),(36,'annetok logged into the system.','2016-08-29 00:40:19'),(37,' Product list was accessed.','2016-08-29 00:40:19'),(38,'annetok logged into the system.','2016-08-29 00:40:46'),(39,' Product list was accessed.','2016-08-29 00:40:46'),(40,' Admin created an accounting manager account; acctgmgr was added into the system.','2016-08-29 00:41:21'),(41,' Product list was accessed.','2016-08-29 00:41:21'),(42,' Product list was accessed.','2016-08-29 00:41:29'),(43,'acctgmgr logged into the system.','2016-08-29 00:41:55'),(44,' Product list was accessed.','2016-08-29 00:41:55'),(45,' List of total sales per product was displayed.','2016-08-29 00:42:19'),(46,' Product list was accessed and arranged by id.','2016-08-29 00:42:19'),(47,' Product list was accessed and arranged by id.','2016-08-29 00:42:20');
+/*!40000 ALTER TABLE `log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `product`
 --
 
@@ -168,7 +193,7 @@ CREATE TABLE `user` (
   `shipping_addr` varchar(300) DEFAULT NULL,
   `card_no` varchar(45) DEFAULT NULL,
   `salt` varchar(45) DEFAULT NULL,
-  `temppw_status` int(11) NOT NULL,
+  `temppw_status` int(11) NOT NULL DEFAULT '0',
   `temppw_timestamp` timestamp(6) NULL DEFAULT NULL,
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -180,7 +205,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('a','b',4,'a','a','a','a@y.com','a a, a, a, a a','a a, a, a, a a','122222222222222222222',NULL,0,NULL),('aa','aa',3,'a','a','a','aa',NULL,NULL,NULL,NULL,0,NULL),('acc','acc',3,'acc','acc','cc','acc',NULL,NULL,NULL,NULL,0,NULL),('annetok','eOwppwb4lX/zI1NC8H+6Vvf8ZUFWz8/K/DiRRWfSVsU=',2,'Anne','U','Bagamaspad','amb@gmail.com','42 P Sherman St, Wallaby, Sydney, 1700 Australia','42 P Sherman St., Walla, Sydney, 1700 Australia','82910361891','wM19Dwvev5VypxGYM6Ac/Q==',0,NULL),('b','b',2,'b','b','b','b@y.c','b b, b, b, b b','b b, b, b, b b','333333333333333333',NULL,0,NULL),('c','c',3,'c','c','c','c@y.c',NULL,NULL,NULL,NULL,0,NULL),('d','d',3,'d','d','d','d@g.c',NULL,NULL,NULL,NULL,0,NULL),('e','e',4,'a','a','a','e',NULL,NULL,NULL,NULL,0,NULL),('g','g',1,'g','g','g','g@y.c','g g, g, g, g g','g g, g, g, g g','123455555555555555',NULL,0,NULL),('james','abc123',3,'James','K','Sy','james_sy@yahoo.com',NULL,NULL,NULL,NULL,0,NULL),('johncaingles','F+XrfHp9KvMqZJhQ4+cnCzmpHP9VETRRNCnWJPfyl8g=',4,'John','D.','Caingles','jc@gmail.coom','1 bjkbj, kbjkbjk, bjkb, jkb jkb','jkb jk, bjk, bjkbj, kbjk bjk','bjk','spvEyP7nr8sG13zn+rvwdw==',0,NULL),('jolosimeon','abc123',1,'Juan Lorenzo','L','Simeon','jolo_simoen@gmail.com','85 blah st.','85 blah st.','1234567891234567',NULL,0,NULL),('kingstonkoa','SmES156PlRqVo2ZJh34tLtfWc6NHR57o7BjF1V+jOeo=',1,'Kingston','T.','Koa','kingstonkoa@gmail.com','87 S. Tuano, wla, San Juan, 1500 Philippines','87 S. Tuano, wla, San Juan, 1500 Philippines','165156156156156156156','MxnmA4W2v5AgScftn+pSIQ==',0,NULL),('p','p',3,'Prod','p','p','p',NULL,NULL,NULL,NULL,0,NULL);
+INSERT INTO `user` VALUES ('a','b',4,'a','a','a','a@y.com','a a, a, a, a a','a a, a, a, a a','122222222222222222222',NULL,0,NULL),('aa','aa',3,'a','a','a','aa',NULL,NULL,NULL,NULL,0,NULL),('acc','acc',3,'acc','acc','cc','acc',NULL,NULL,NULL,NULL,0,NULL),('acctgmgr','5MHB17aAFtWOP0uC63Taj46DVSonPzZlT6fUeugwrHQ=',4,'accounting','m','anager','a@y.com',NULL,NULL,NULL,'X7N5GS8ePpHIoPA+4iUwfQ==',1,'2016-08-29 00:46:20.472000'),('annetok','8trd2fIIoOaiOR/m8/kZr2ky1JuBKmJWA5AYjBGFSi4=',2,'Anne','U','Bagamaspad','amb@gmail.com','42 P Sherman St, Wallaby, Sydney, 1700 Australia','42 P Sherman St., Walla, Sydney, 1700 Australia','82910361891','XoQUXIOHDPVdrVDhDjzh7w==',0,NULL),('b','b',2,'b','b','b','b@y.c','b b, b, b, b b','b b, b, b, b b','333333333333333333',NULL,0,NULL),('c','c',3,'c','c','c','c@y.c',NULL,NULL,NULL,NULL,0,NULL),('d','d',3,'d','d','d','d@g.c',NULL,NULL,NULL,NULL,0,NULL),('e','e',4,'a','a','a','e',NULL,NULL,NULL,NULL,0,NULL),('g','g',1,'g','g','g','g@y.c','g g, g, g, g g','g g, g, g, g g','123455555555555555',NULL,0,NULL),('james','abc123',3,'James','K','Sy','james_sy@yahoo.com',NULL,NULL,NULL,NULL,0,NULL),('johncaingles','F+XrfHp9KvMqZJhQ4+cnCzmpHP9VETRRNCnWJPfyl8g=',4,'John','D.','Caingles','jc@gmail.coom','1 bjkbj, kbjkbjk, bjkb, jkb jkb','jkb jk, bjk, bjkbj, kbjk bjk','bjk','spvEyP7nr8sG13zn+rvwdw==',0,NULL),('jolosimeon','abc123',1,'Juan Lorenzo','L','Simeon','jolo_simoen@gmail.com','85 blah st.','85 blah st.','1234567891234567',NULL,0,NULL),('kingstonkoa','SmES156PlRqVo2ZJh34tLtfWc6NHR57o7BjF1V+jOeo=',1,'Kingston','T.','Koa','kingstonkoa@gmail.com','87 S. Tuano, wla, San Juan, 1500 Philippines','87 S. Tuano, wla, San Juan, 1500 Philippines','165156156156156156156','MxnmA4W2v5AgScftn+pSIQ==',0,NULL),('p','p',3,'Prod','p','p','p',NULL,NULL,NULL,NULL,0,NULL),('prodmgr','dNj7XXQy5c01B5lui1jFVdoF7Os0dfOHjjBoz0wAf5I=',3,'prod','m','anager','p@y.com',NULL,NULL,NULL,'y8sOn975MMj2pynedpX62w==',0,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -193,4 +218,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-08-29  2:04:11
+-- Dump completed on 2016-08-29  8:44:16

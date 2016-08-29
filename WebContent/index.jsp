@@ -3,6 +3,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="objects.User"%>
 <%@page import="objects.ShoppingCart" %>
+<%@page import="objects.HTMLInputFilter"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>

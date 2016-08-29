@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import objects.HTMLInputFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -40,7 +41,7 @@ public class AddReview extends HttpServlet {
 		Review r = new Review();
 		int id = Integer.valueOf(request.getParameter("prod_id"));
 		r.setProductId(id);
-		r.setDetails(request.getParameter("details"));
+		r.setDetails(new HTMLInputFilter().filter(request.getParameter("details")));
 		r.setStars(Integer.valueOf(request.getParameter("new_star")));
 		r.setUsername(request.getParameter("username"));
 		Model.addReview(r);

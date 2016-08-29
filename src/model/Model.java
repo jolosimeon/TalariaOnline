@@ -51,7 +51,7 @@ public class Model
             }
         } catch (Exception e)
         {
-            e.printStackTrace();
+        	e.printStackTrace();
         }
         if(saltFromDB == null)
         	return user;
@@ -78,8 +78,18 @@ public class Model
                 	deleteExpiredAccount(username);
                 }
             }
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log(username, "logged into the system.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            String logdesc = "";
+            if (getUser(username) != null)
+            	logdesc = "attempted and failed to log into the system: incorrect credentials.";
+            else logdesc = "attempted and failed to log into the system: not an existing user.";
+            log(username, "attempted and failed to log into the system:.", now);
             e.printStackTrace();
         }
 
@@ -169,8 +179,15 @@ public class Model
 
             pstmt.executeUpdate();
             
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "A customer account was created: " + c.getUsername() + " was added into the system.", now);
+            
         } catch (Exception e)
         {
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "System attempted to create a customer account: " + c.getUsername() + " was not added into the system.", now);
             e.printStackTrace();
         }
     }
@@ -184,9 +201,9 @@ public class Model
     	
     	// temporary password timestamp
     	Calendar calendar = Calendar.getInstance();
-//    	calendar.add(Calendar.DATE, 1);
-//    	Date expirydate = calendar.getTime();
-    	Date expirydate = new Date(System.currentTimeMillis()+5*60*1000);
+    	calendar.add(Calendar.DATE, 1);
+    	Date expirydate = calendar.getTime();
+//    	Date expirydate = new Date(System.currentTimeMillis()+5*60*1000);
     	Timestamp expiry = new java.sql.Timestamp(expirydate.getTime());
 
         db = new DBConnection();
@@ -210,8 +227,14 @@ public class Model
 
             pstmt.executeUpdate();
             
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Admin created a product manager account; " + pm.getUsername() + " was added into the system.", now);
         } catch (Exception e)
         {
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Admin attempted to create a product manager account; " + pm.getUsername() + " was not added into the system.", now);
             e.printStackTrace();
         }
     }
@@ -250,8 +273,15 @@ public class Model
             pstmt.setTimestamp(10, expiry); // for password/account expiration, refer to this +24 hours
             pstmt.executeUpdate();
             
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Admin created an accounting manager account; " + am.getUsername() + " was added into the system.", now);
+            
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Admin created an accounting manager account; " + am.getUsername() + " was added into the system.", now);
             e.printStackTrace();
         }
     }
@@ -272,9 +302,14 @@ public class Model
             pstmt.setDouble(4, p.getPrice());
             pstmt.setString( 5, p.getAdderUsername());  
             pstmt.executeUpdate();
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product manager added a product: " + p.getName() + " was added into the system.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product manager attempted to add a product: " + p.getName() + " was not added into the system.", now);
             e.printStackTrace();
         }
     }
@@ -292,8 +327,15 @@ public class Model
             pstmt.setInt( 1, id);  
             pstmt.executeUpdate();
             
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product manager deleted a product: was removed from the system.", now);
+            
         } catch (Exception e)
         {
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+        	log("", "Product manager attempted to delete a product: does not exist in the system. or cannot be deleted.", now);
             e.printStackTrace();
         }
     }
@@ -315,8 +357,14 @@ public class Model
             pstmt.setInt( 5, id);  
             pstmt.executeUpdate();
             
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product manager edited a product's details: product was edited in the system.", now);
         } catch (Exception e)
         {
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+        	log("", "Product manager attempted to edit a product's details: does not exist in the system. or cannot be modified.", now);
             e.printStackTrace();
         }
     }
@@ -340,9 +388,14 @@ public class Model
                 product = new Product(rs.getInt("prod_id"), rs.getInt("prod_type"), rs.getString("prod_name"), rs.getString("prod_desc"), rs.getDouble("prod_price"), rs.getString("adder_username"));
                 product_list.add(product);
             }
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product list was accessed.", now);
         } catch (Exception e)
         {
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+        	log("", "Product list was attempted and failed to be accessed.", now);
             e.printStackTrace();
         }
         return product_list;
@@ -386,8 +439,14 @@ public class Model
                 product_list.add(product);
             }
             
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product list was accessed and arranged by name and category.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product list was attempted and failed to be accessed.", now);
             e.printStackTrace();
         }
         return product_list;
@@ -413,9 +472,14 @@ public class Model
                 product = new Product(rs.getInt("prod_id"), rs.getInt("prod_type"), rs.getString("prod_name"), rs.getString("prod_desc"), rs.getDouble("prod_price"), rs.getString("adder_username"));
                 product_list.add(product);
             }
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product list was accessed and arranged by name.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product list was attempted and failed to be accessed.", now);
             e.printStackTrace();
         }
         return product_list;
@@ -450,9 +514,14 @@ public class Model
             while (rs.next()) {
             	product.addReview(new Review(rs.getInt("prod_id"), rs.getInt("stars"), rs.getString("details"), rs.getString("username")));
             }
-            
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product list was accessed and arranged by id.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product list was attempted and failed to be accessed.", now);
             e.printStackTrace();
         }
 //        return product_list;
@@ -479,9 +548,14 @@ public class Model
                 product = new Product(rs.getInt("prod_id"), rs.getInt("prod_type"), rs.getString("prod_name"), rs.getString("prod_desc"), rs.getDouble("prod_price"), rs.getString("adder_username"));
                 product_list.add(product);
             }
-            
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product list was accessed and arranged by category.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Product list was attempted and failed to be accessed.", now);
             e.printStackTrace();
         }
         return product_list;
@@ -508,9 +582,15 @@ public class Model
             pstmt.setString( 2, t.getUsername()); 
             pstmt.setDouble( 3, t.getTotal()); 
             pstmt.executeUpdate();
-            
+
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Customer proceeded to check out his/her items.", now);
         } catch (Exception e)
         {
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+        	log("", "Customer failed to proceed to check out his/her items.", now);
             e.printStackTrace();
         }
         return t;
@@ -532,9 +612,14 @@ public class Model
             pstmt.setDouble( 4, t.getUnitPrice()); 
             pstmt.setDouble( 5, t.getLineTotal()); 
             pstmt.executeUpdate();
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Customer added an item to his/her shopping cart.", now);
         } catch (Exception e)
         {
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Customer failed to add an item to his/her shopping cart.", now);
             e.printStackTrace();
         }
     }
@@ -554,9 +639,14 @@ public class Model
             pstmt.setString( 3, r.getDetails()); 
             pstmt.setString( 4, r.getUsername()); 
             pstmt.executeUpdate();
-            
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Customer revied an item he/she has already purchased.", now);
         } catch (Exception e)
         {
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Customer tried to review an item he/she has not yet purchased or a product that no longer exists.", now);
             e.printStackTrace();
         }
     }
@@ -586,8 +676,14 @@ public class Model
             {
                 salt  = rs.getString("salt");
             }
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log(username, "got salt.", now);
         } catch (Exception e)
         {
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log(username, "failed to get salt.", now);
             e.printStackTrace();
         }
     	return salt;
@@ -595,11 +691,8 @@ public class Model
     
     public static boolean changePassword(String username, String oldpw, String newpw)
     {
-    	System.out.println(username + " ako to");
     	User user = getUser(username);
     	byte[] salt =  Base64.getDecoder().decode(getSalt(username));
-    	System.out.println(salt + " salt");
-    	System.out.println(oldpw + "old");
     	
     	RandomNumberGenerator rng = new SecureRandomNumberGenerator();
     	ByteSource newSalt = rng.nextBytes();
@@ -619,8 +712,14 @@ public class Model
 	            pstmt.setString(2, newSalt.toBase64());
 	            pstmt.setString( 3, username);
 	            pstmt.executeUpdate();
+	            // LOG:
+	            Date now = Calendar.getInstance().getTime();
+	            log(username, "changed his/her password.", now);
 	        } catch (Exception e)
 	        {
+	            // LOG:
+	            Date now = Calendar.getInstance().getTime();
+	            log(username, "tried to change his/her password and failed.", now);
 	            e.printStackTrace();
 	        }
 	        return true;
@@ -631,28 +730,39 @@ public class Model
     
     public static void assignTempPassword(String username, String newpw)
     {
+    	RandomNumberGenerator rng = new SecureRandomNumberGenerator();
+    	ByteSource newSalt = rng.nextBytes();
+    	String newHash = new Sha256Hash(newpw, newSalt, 1024).toBase64();
+    	
         db = new DBConnection();
         java.sql.Connection connection = db.getConnection();
         
      // temporary password timestamp
     	Calendar calendar = Calendar.getInstance();
-//    	calendar.add(Calendar.DATE, 1);
-//    	Date expirydate = calendar.getTime();
-    	Date expirydate = new Date(System.currentTimeMillis()+5*60*1000);
+    	calendar.add(Calendar.DATE, 1);
+    	Date expirydate = calendar.getTime();
+//    	Date expirydate = new Date(System.currentTimeMillis()+5*60*1000);
     	Timestamp expiry = new java.sql.Timestamp(expirydate.getTime());
         
         try
         {
             PreparedStatement pstmt;
-            String query = "UPDATE user SET password = ?, temppw_status = 1, temppw_timetamp = ? WHERE username = ?";
+            String query = "UPDATE user SET password = ?, salt = ?, temppw_status = 1, temppw_timestamp = ? WHERE username = ?";
             pstmt = connection.prepareStatement( query );
-            pstmt.setString( 1, newpw);
-            pstmt.setTimestamp(2, expiry);
-            pstmt.setString( 3, username);
+            pstmt.setString( 1, newHash);
+            pstmt.setString( 2, newSalt.toBase64());
+            pstmt.setTimestamp(3, expiry);
+            pstmt.setString( 4, username);
             pstmt.executeUpdate();
             System.out.println("change is coming");
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log(username, "was assigned a tempoary password.", now);
         } catch (Exception e)
         {
+            // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log(username, "was assigned a temporary password but failed.", now);
             e.printStackTrace();
         }
     }
@@ -678,9 +788,14 @@ public class Model
                 transaction = new Transaction(rs.getInt("trans_id"), rs.getString("username"), rs.getInt("prod_id"), rs.getInt("quantity"), rs.getDouble("unit_price"), rs.getDouble("line_total"), rs.getDouble("total"));
                 transaction_list.add(transaction);
             }
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "All transactions were accessed for display.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "All transactions were attempted and failed to be displayed.", now);
             e.printStackTrace();
         }
         return transaction_list;
@@ -706,9 +821,14 @@ public class Model
                 transaction = new Transaction(rs.getInt("trans_id"), rs.getString("username"), rs.getInt("prod_id"), rs.getInt("quantity"), rs.getDouble("unit_price"), rs.getDouble("line_total"), rs.getDouble("total"));
                 transaction_list.add(transaction);
             }
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "All " + type + " items were displayed.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "All " + type + " items failed to be displayed.", now);
             e.printStackTrace();
         }
         return transaction_list;
@@ -734,9 +854,14 @@ public class Model
                 transaction = new Transaction(rs.getInt("trans_id"), rs.getString("username"), rs.getInt("prod_id"), rs.getInt("quantity"), rs.getDouble("unit_price"), rs.getDouble("line_total"), rs.getDouble("total"));
 //                transaction_list.add(transaction);
             }
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log(username, "Latest transaction was accessed for display.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log(username, "Latest transaction was requested but failed to display.", now);
             e.printStackTrace();
         }
         return transaction;
@@ -762,9 +887,14 @@ public class Model
                 tlineitem = new TransactionLineItem(rs.getInt("trans_id"), rs.getInt("prod_id"), rs.getInt("quantity"), rs.getDouble("unit_price"), rs.getDouble("line_total"));
                 item_list.add(tlineitem);
             }
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Item " + id + " was accessed for display.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "Item " + id + " was attempted and failed to be accessed.", now);
             e.printStackTrace();
         }
         return item_list;
@@ -790,9 +920,14 @@ public class Model
                 transaction = new Transaction(rs.getInt("trans_id"), rs.getString("username"), rs.getInt("prod_id"), rs.getInt("quantity"), rs.getDouble("unit_price"), rs.getDouble("line_total"), rs.getDouble("total"));
                 transaction_list.add(transaction);
             }
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "List of bought " + productId + " was displayed.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "List of bought " + productId + " failed to display.", now);
             e.printStackTrace();
         }
         return transaction_list;
@@ -821,9 +956,14 @@ public class Model
                 sale = new Sale(rs.getInt("prod_id"), rs.getString("prod_name"), rs.getInt("total_quantity_sold"), rs.getDouble("total_sales"));
                 sale_list.add(sale);
             }
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "List of total sales per product was displayed.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "List of total sales per product failed to display.", now);
             e.printStackTrace();
         }
         return sale_list;
@@ -853,9 +993,14 @@ public class Model
                 sale = new Sale(rs.getInt("prod_id"), rs.getString("prod_name"), rs.getInt("total_quantity_sold"), rs.getDouble("total_sales"));
                 sale_list.add(sale);
             }
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "List of total sales of " + id + " was displayed.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "List of total sales of " + id + " failed to display.", now);
             e.printStackTrace();
         }
         return sale_list;
@@ -884,9 +1029,14 @@ public class Model
                 sale = new Sale(rs.getInt("prod_id"), rs.getString("prod_name"), rs.getInt("total_quantity_sold"), rs.getDouble("total_sales"));
                 sale_list.add(sale);
             }
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "List of total sales was displayed by type.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "List of total sales by type failed to display.", now);
             e.printStackTrace();
         }
         return sale_list;
@@ -916,9 +1066,14 @@ public class Model
                 sale = new Sale(rs.getInt("prod_id"), rs.getString("prod_name"), rs.getInt("total_quantity_sold"), rs.getDouble("total_sales"));
                 sale_list.add(sale);
             }
-            
+         // LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "List of total sales for type " + type + " was displayed.", now);
         } catch (Exception e)
         {
+        	// LOG:
+            Date now = Calendar.getInstance().getTime();
+            log("", "List of total sales for type " + type + " failed to display.", now);
             e.printStackTrace();
         }
         return sale_list;
@@ -945,9 +1100,12 @@ public class Model
                     pstmt = connection.prepareStatement( query );
         			pstmt.setString( 1, users.get(i).getUsername()); 
         			pstmt.executeUpdate();
-        			
+        			// LOG:
+                    log("", "All expired accounts are deleted.", now);
                 } catch (Exception e)
                 {
+                	// LOG:
+                    log("", "Failed to delete all expired accounts.", now);
                     e.printStackTrace();
                 }
             }
@@ -973,11 +1131,37 @@ public class Model
                 pstmt = connection.prepareStatement( query );
     			pstmt.setString( 1, username); 
     			pstmt.executeUpdate();
-    			
+    			// LOG:
+                log(username , "This expired account is deleted.", now);
             } catch (Exception e)
             {
+            	// LOG:
+                log(username, "Failed to delete this expired account.", now);
                 e.printStackTrace();
             }
+        }
+    }
+    
+    private static void log(String username, String action, Date timestamp) {
+    	// TODO: if username is "", find username if logged in.
+    	
+    	String logcontent = username + " " + action;
+    	Timestamp currentTimestamp = new java.sql.Timestamp(timestamp.getTime());
+    	db = new DBConnection();
+        java.sql.Connection connection = db.getConnection();
+        try
+        {
+            ResultSet rs;
+            PreparedStatement pstmt;
+            String query = "INSERT INTO log(log_desc, log_time) VALUES (?, ?)";
+            pstmt = connection.prepareStatement( query );
+            pstmt.setString( 1, logcontent); 
+            pstmt.setTimestamp( 2, currentTimestamp);
+            pstmt.executeUpdate();
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
         }
     }
 }

@@ -5,6 +5,7 @@
 <%@page import="objects.User"%>
 <%@page import="objects.ShoppingCart"%>
 <%@page import="model.Model"%>
+<%@page import="objects.HTMLInputFilter"%>
 <html lang="en"><head>
       <meta charset="utf-8">
       <title>Your Shopping Cart</title>

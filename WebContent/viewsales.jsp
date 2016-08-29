@@ -3,6 +3,7 @@
 <%@page import="objects.User"%>
 <%@page import="objects.Sale"%>
 <%@page import="model.Model"%>
+<%@page import="objects.HTMLInputFilter"%>
 <html lang="en"><head>
       <meta charset="utf-8">
       <title>View Financial Records</title>
@@ -148,11 +149,9 @@
                     <label class="control-label">View by<span class="text-danger">*</span></label>
                     <select name = "viewmode">
                     	<%for (int i=0; i < viewModes.size(); i++) { %>
-<<<<<<< HEAD
+
                     		<option value= "<%String.valueOf(i);%>" ><%=viewModes.get(i) %></option>
-=======
-                    		<option value= "<%String.valueOf(i);%>" ><%viewModes.get(i); %></option>
->>>>>>> 8e8ce03998bf1322f97c25093c03e97de74387ff
+
                     	<%} %>
                     </select>
                   </div>

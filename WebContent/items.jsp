@@ -1,8 +1,11 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@page import="objects.User"%>
 <%@page import="objects.Product"%>
 <%@page import="objects.ShoppingCart"%>
 <%@page import="model.Model"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="objects.HTMLInputFilter"%>
 
  <%
   String userName = null, id  = null;
