@@ -9,8 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import model.Model;
 import objects.ShoppingCart;
 import objects.TransactionLineItem;
+import objects.User;
 
 /**
  * Servlet implementation class AddToShoppingCart
@@ -45,7 +47,13 @@ public class AddToShoppingCart extends HttpServlet {
 		item.setQuantity(Integer.valueOf(request.getParameter("prod_qty")));
 		item.setUnitPrice(Double.valueOf(request.getParameter("prod_price")));
 		cart.add(item);
-		response.sendRedirect("index.jsp");
+		
+		User requester = (User) session.getAttribute("user");
+		if (Model.checkAuthentication(requester.getUsername(), "purchaseproduct")) {
+			response.sendRedirect("index.jsp");
+		} else {
+			response.sendRedirect("errorpage.jsp");
+		}
 	}
 
 }

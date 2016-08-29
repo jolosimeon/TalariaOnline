@@ -39,14 +39,23 @@ public class EditProduct extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		User requester = (User) request.getSession().getAttribute("user");
+		
+		
 		Product p = new Product();
 		int id = Integer.valueOf(request.getParameter("prod_id"));
 		p.setDescription(request.getParameter("desc"));
 		p.setName(request.getParameter("prod_name"));
 		p.setPrice(Double.valueOf(request.getParameter("price")));
 		p.setType(Integer.valueOf(request.getParameter("type")));
-		Model.editProduct(p.getType(), p.getName(), p.getDescription(), p.getPrice(), id);
-		response.sendRedirect("items.jsp?item=" + id);
+		
+		
+		if (Model.checkAuthentication(request.getParameter("username"), "review")) {
+			Model.editProduct(p.getType(), p.getName(), p.getDescription(), p.getPrice(), id, requester.getUsername());
+			response.sendRedirect("items.jsp?item=" + id);
+		} else {
+			response.sendRedirect("errorpage.jsp");
+		}
 	}
 
 }

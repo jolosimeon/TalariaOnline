@@ -48,8 +48,13 @@ public class AddProduct extends HttpServlet {
 		p.setName(request.getParameter("prod_name"));
 		p.setPrice(Double.valueOf(request.getParameter("price")));
 		p.setType(Integer.valueOf(request.getParameter("type")));
-		Model.addProduct(p);
-		response.sendRedirect("index.jsp");
+		
+		if (Model.checkAuthentication(request.getParameter("username"), "review")) {
+			Model.addProduct(p, user.getUsername());
+			response.sendRedirect("index.jsp");
+		} else {
+			response.sendRedirect("errorpage.jsp");
+		}
 	}
 
 }

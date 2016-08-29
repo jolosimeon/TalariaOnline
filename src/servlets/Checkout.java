@@ -44,18 +44,22 @@ public class Checkout extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
-		ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
-		Transaction t = new Transaction();
-		t.setTotal(cart.getTotal());
-		t.setUsername(user.getUsername());
-		t = Model.addTransaction(t);
-		ArrayList<TransactionLineItem> products = cart.getProducts();
-		for (int i = 0; i < products.size(); i++) {
-			products.get(i).setTransactionId(t.getId());
-			Model.addTransactionLineItem(products.get(i));
+		if (Model.checkAuthentication(user.getUsername(), "purchaseproduct")) {
+			ShoppingCart cart = (ShoppingCart) session.getAttribute("cart");
+			Transaction t = new Transaction();
+			t.setTotal(cart.getTotal());
+			t.setUsername(user.getUsername());
+			t = Model.addTransaction(t, user.getUsername());
+			ArrayList<TransactionLineItem> products = cart.getProducts();
+			for (int i = 0; i < products.size(); i++) {
+				products.get(i).setTransactionId(t.getId());
+				Model.addTransactionLineItem(products.get(i), user.getUsername());
+			}
+			cart.empty();
+			response.sendRedirect("checkout.jsp");
+		} else {
+			response.sendRedirect("errorpage.jsp");
 		}
-		cart.empty();
-		response.sendRedirect("checkout.jsp");
 	}
 
 }

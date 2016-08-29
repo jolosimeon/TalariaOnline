@@ -18,6 +18,39 @@ USE `talaria_db`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `authentication`
+--
+
+DROP TABLE IF EXISTS `authentication`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `authentication` (
+  `id` int(11) NOT NULL DEFAULT '9',
+  `rolename` varchar(45) DEFAULT NULL,
+  `purchaseProduct` int(11) DEFAULT NULL,
+  `reviewProduct` int(11) DEFAULT NULL,
+  `addProduct` int(11) DEFAULT NULL,
+  `editProduct` int(11) DEFAULT NULL,
+  `deleteProduct` int(11) DEFAULT NULL,
+  `viewSales` int(11) DEFAULT NULL,
+  `createAccount` int(11) DEFAULT NULL,
+  `assignPassword` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_type_idx` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `authentication`
+--
+
+LOCK TABLES `authentication` WRITE;
+/*!40000 ALTER TABLE `authentication` DISABLE KEYS */;
+INSERT INTO `authentication` VALUES (1,'Customer',1,1,1,0,0,0,0,0),(2,'Administrator',0,0,0,0,0,0,1,1),(3,'Product Manager',0,0,0,1,1,0,0,0),(4,'Accounting Manager',0,0,0,0,0,1,0,0);
+/*!40000 ALTER TABLE `authentication` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `log`
 --
 
@@ -29,7 +62,7 @@ CREATE TABLE `log` (
   `log_desc` varchar(200) NOT NULL,
   `log_time` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`idlog`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +71,7 @@ CREATE TABLE `log` (
 
 LOCK TABLES `log` WRITE;
 /*!40000 ALTER TABLE `log` DISABLE KEYS */;
-INSERT INTO `log` VALUES (1,' Product list was accessed.','2016-08-29 00:30:47'),(2,'annetok logged into the system.','2016-08-29 00:30:56'),(3,'annetok logged into the system.','2016-08-29 00:31:24'),(4,'annetok logged into the system.','2016-08-29 00:31:31'),(5,' Product list was accessed.','2016-08-29 00:31:32'),(6,'annetok got salt.','2016-08-29 00:31:44'),(7,'annetok changed his/her password.','2016-08-29 00:31:45'),(8,' Product list was accessed.','2016-08-29 00:31:45'),(9,'annetok logged into the system.','2016-08-29 00:31:52'),(10,'annetok logged into the system.','2016-08-29 00:31:59'),(11,' Product list was accessed.','2016-08-29 00:31:59'),(12,'annetok Latest transaction was accessed for display.','2016-08-29 00:32:09'),(13,' Product list was accessed.','2016-08-29 00:32:09'),(14,'johncaingles logged into the system.','2016-08-29 00:33:06'),(15,'annetok logged into the system.','2016-08-29 00:33:31'),(16,' Product list was accessed.','2016-08-29 00:33:31'),(17,'annetok Latest transaction was accessed for display.','2016-08-29 00:33:36'),(18,' Product list was accessed.','2016-08-29 00:33:39'),(19,' Admin created a product manager account; prodmgr was added into the system.','2016-08-29 00:34:04'),(20,' Product list was accessed.','2016-08-29 00:34:04'),(21,' Product list was accessed.','2016-08-29 00:34:10'),(22,'prodmgr logged into the system.','2016-08-29 00:35:12'),(23,' Product list was accessed.','2016-08-29 00:35:12'),(24,'prodmgr got salt.','2016-08-29 00:35:43'),(25,'prodmgr changed his/her password.','2016-08-29 00:35:43'),(26,' Product list was accessed.','2016-08-29 00:35:43'),(27,'prodmgr logged into the system.','2016-08-29 00:38:18'),(28,' Product list was accessed.','2016-08-29 00:38:18'),(29,'prodmgr got salt.','2016-08-29 00:38:34'),(30,'prodmgr changed his/her password.','2016-08-29 00:38:34'),(31,' Product list was accessed.','2016-08-29 00:38:36'),(32,'prodmgr logged into the system.','2016-08-29 00:39:43'),(33,' Product list was accessed.','2016-08-29 00:39:43'),(34,' Product list was accessed.','2016-08-29 00:39:52'),(35,'annetok logged into the system.','2016-08-29 00:40:10'),(36,'annetok logged into the system.','2016-08-29 00:40:19'),(37,' Product list was accessed.','2016-08-29 00:40:19'),(38,'annetok logged into the system.','2016-08-29 00:40:46'),(39,' Product list was accessed.','2016-08-29 00:40:46'),(40,' Admin created an accounting manager account; acctgmgr was added into the system.','2016-08-29 00:41:21'),(41,' Product list was accessed.','2016-08-29 00:41:21'),(42,' Product list was accessed.','2016-08-29 00:41:29'),(43,'acctgmgr logged into the system.','2016-08-29 00:41:55'),(44,' Product list was accessed.','2016-08-29 00:41:55'),(45,' List of total sales per product was displayed.','2016-08-29 00:42:19'),(46,' Product list was accessed and arranged by id.','2016-08-29 00:42:19'),(47,' Product list was accessed and arranged by id.','2016-08-29 00:42:20');
+INSERT INTO `log` VALUES (1,' Product list was accessed.','2016-08-29 00:30:47'),(2,'annetok logged into the system.','2016-08-29 00:30:56'),(3,'annetok logged into the system.','2016-08-29 00:31:24'),(4,'annetok logged into the system.','2016-08-29 00:31:31'),(5,' Product list was accessed.','2016-08-29 00:31:32'),(6,'annetok got salt.','2016-08-29 00:31:44'),(7,'annetok changed his/her password.','2016-08-29 00:31:45'),(8,' Product list was accessed.','2016-08-29 00:31:45'),(9,'annetok logged into the system.','2016-08-29 00:31:52'),(10,'annetok logged into the system.','2016-08-29 00:31:59'),(11,' Product list was accessed.','2016-08-29 00:31:59'),(12,'annetok Latest transaction was accessed for display.','2016-08-29 00:32:09'),(13,' Product list was accessed.','2016-08-29 00:32:09'),(14,'johncaingles logged into the system.','2016-08-29 00:33:06'),(15,'annetok logged into the system.','2016-08-29 00:33:31'),(16,' Product list was accessed.','2016-08-29 00:33:31'),(17,'annetok Latest transaction was accessed for display.','2016-08-29 00:33:36'),(18,' Product list was accessed.','2016-08-29 00:33:39'),(19,' Admin created a product manager account; prodmgr was added into the system.','2016-08-29 00:34:04'),(20,' Product list was accessed.','2016-08-29 00:34:04'),(21,' Product list was accessed.','2016-08-29 00:34:10'),(22,'prodmgr logged into the system.','2016-08-29 00:35:12'),(23,' Product list was accessed.','2016-08-29 00:35:12'),(24,'prodmgr got salt.','2016-08-29 00:35:43'),(25,'prodmgr changed his/her password.','2016-08-29 00:35:43'),(26,' Product list was accessed.','2016-08-29 00:35:43'),(27,'prodmgr logged into the system.','2016-08-29 00:38:18'),(28,' Product list was accessed.','2016-08-29 00:38:18'),(29,'prodmgr got salt.','2016-08-29 00:38:34'),(30,'prodmgr changed his/her password.','2016-08-29 00:38:34'),(31,' Product list was accessed.','2016-08-29 00:38:36'),(32,'prodmgr logged into the system.','2016-08-29 00:39:43'),(33,' Product list was accessed.','2016-08-29 00:39:43'),(34,' Product list was accessed.','2016-08-29 00:39:52'),(35,'annetok logged into the system.','2016-08-29 00:40:10'),(36,'annetok logged into the system.','2016-08-29 00:40:19'),(37,' Product list was accessed.','2016-08-29 00:40:19'),(38,'annetok logged into the system.','2016-08-29 00:40:46'),(39,' Product list was accessed.','2016-08-29 00:40:46'),(40,' Admin created an accounting manager account; acctgmgr was added into the system.','2016-08-29 00:41:21'),(41,' Product list was accessed.','2016-08-29 00:41:21'),(42,' Product list was accessed.','2016-08-29 00:41:29'),(43,'acctgmgr logged into the system.','2016-08-29 00:41:55'),(44,' Product list was accessed.','2016-08-29 00:41:55'),(45,' List of total sales per product was displayed.','2016-08-29 00:42:19'),(46,' Product list was accessed and arranged by id.','2016-08-29 00:42:19'),(47,' Product list was accessed and arranged by id.','2016-08-29 00:42:20'),(48,' List of total sales per product was displayed.','2016-08-29 00:53:57'),(49,' Product list was accessed and arranged by id.','2016-08-29 00:53:57'),(50,' Product list was accessed and arranged by id.','2016-08-29 00:53:57'),(51,' Product list was accessed.','2016-08-29 03:04:47'),(52,'kingstonkoa logged into the system.','2016-08-29 03:05:01'),(53,' Product list was accessed.','2016-08-29 03:05:01'),(54,'kingstonkoa Latest transaction was accessed for display.','2016-08-29 03:05:20'),(55,' Product list was accessed.','2016-08-29 03:07:03'),(56,' Product list was accessed.','2016-08-29 03:07:08'),(57,'annetok logged into the system.','2016-08-29 03:07:18'),(58,' Product list was accessed.','2016-08-29 03:07:18'),(59,'annetok Latest transaction was accessed for display.','2016-08-29 03:08:08'),(60,'annetok  attempted to purchase a product - failed: not allowed to do this.','2016-08-29 03:08:13'),(61,' Product list was accessed.','2016-08-29 03:37:59'),(62,' Product list was accessed.','2016-08-29 03:38:11'),(63,'d : Authenticating user - failed.','2016-08-29 03:38:28'),(64,' Product list was accessed.','2016-08-29 03:41:51'),(65,' Product list was accessed.','2016-08-29 03:42:16'),(66,'kingstonkoa logged into the system.','2016-08-29 03:42:27'),(67,'kingstonkoa logged into the system.','2016-08-29 03:42:32'),(68,' Product list was accessed.','2016-08-29 03:42:32'),(69,' Product list was accessed.','2016-08-29 03:43:05'),(70,' Product list was accessed.','2016-08-29 03:43:09'),(71,'annetok logged into the system.','2016-08-29 03:43:18'),(72,' Product list was accessed.','2016-08-29 03:43:19'),(73,' Product list was accessed.','2016-08-29 03:45:14'),(74,' Product list was accessed.','2016-08-29 03:46:12'),(75,'annetok logged into the system.','2016-08-29 03:46:23'),(76,' Product list was accessed.','2016-08-29 03:46:24'),(77,'annetok Latest transaction was accessed for display.','2016-08-29 03:46:27'),(78,'annetok : Authenticating user - success!','2016-08-29 03:46:32');
 /*!40000 ALTER TABLE `log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -195,7 +228,9 @@ CREATE TABLE `user` (
   `salt` varchar(45) DEFAULT NULL,
   `temppw_status` int(11) NOT NULL DEFAULT '0',
   `temppw_timestamp` timestamp(6) NULL DEFAULT NULL,
-  PRIMARY KEY (`username`)
+  PRIMARY KEY (`username`),
+  KEY `user_role_idx` (`user_type`),
+  CONSTRAINT `user_role` FOREIGN KEY (`user_type`) REFERENCES `log` (`idlog`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -218,4 +253,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-08-29  8:44:16
+-- Dump completed on 2016-08-29 11:51:57

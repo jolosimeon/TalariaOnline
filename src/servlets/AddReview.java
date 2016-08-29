@@ -44,8 +44,13 @@ public class AddReview extends HttpServlet {
 		r.setDetails(new HTMLInputFilter().filter(request.getParameter("details")));
 		r.setStars(Integer.valueOf(request.getParameter("new_star")));
 		r.setUsername(request.getParameter("username"));
-		Model.addReview(r);
-		response.sendRedirect("items.jsp?item=" + id);
+		
+		if (Model.checkAuthentication(request.getParameter("username"), "review")) {
+			Model.addReview(r, request.getParameter("username"));
+			response.sendRedirect("items.jsp?item=" + id);
+		} else {
+			response.sendRedirect("errorpage.jsp");
+		}
 	}
 
 }

@@ -37,6 +37,8 @@ public class CreateMngrAccount extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		User requester = (User) request.getSession().getAttribute("user");
+		
 		User c = new User();
 		c.setEmail(request.getParameter("email"));
 		c.setFirstName(request.getParameter("first_name"));
@@ -44,11 +46,16 @@ public class CreateMngrAccount extends HttpServlet {
 		c.setMiddleInitial(request.getParameter("mid_initial"));
 		c.setUsername(request.getParameter("username"));
 		c.setPassword(request.getParameter("pwd"));
-		if (Integer.valueOf(request.getParameter("type")) == 2)
-			Model.addAccountingManagerAccount(c);
-		else if (Integer.valueOf(request.getParameter("type")) == 1)
-			Model.addProductManagerAccount(c);
-        response.sendRedirect("index.jsp");
+		
+		if (Model.checkAuthentication(request.getParameter("username"), "review")) {
+			if (Integer.valueOf(request.getParameter("type")) == 2)
+				Model.addAccountingManagerAccount(c, requester.getUsername());
+			else if (Integer.valueOf(request.getParameter("type")) == 1)
+				Model.addProductManagerAccount(c, requester.getUsername());
+	        response.sendRedirect("index.jsp");
+		} else {
+			response.sendRedirect("errorpage.jsp");
+		}
 	}
 
 }

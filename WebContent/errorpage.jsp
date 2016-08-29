@@ -1,14 +1,8 @@
-<%@page import="objects.Product"%>
-<%@page import="objects.Transaction"%>
-<%@page import="objects.TransactionLineItem"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="objects.User"%>
-<%@page import="objects.ShoppingCart"%>
 <%@page import="model.Model"%>
 <%@page import="objects.HTMLInputFilter"%>
 <html lang="en"><head>
       <meta charset="utf-8">
-      <title>Your Shopping Cart</title>
+      <title>Thank you!</title>
       <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,30 +68,20 @@
     }
   }
   
-  if (userName == null) {
-	  if (!Model.checkAuthentication(userName, "purchaseproduct")) 
-		  response.sendRedirect("errorpage.jsp");
-	  else response.sendRedirect("login.jsp");
-  }
+  if (userName == null)
+      response.sendRedirect("login.jsp");
   
    else
   {
       session = request.getSession();
       session.setAttribute("user", Model.getUser(id));
   }
-
-  
-  User user = Model.getUser(id);
-  Transaction transaction = Model.getLatestTransactionByUser(user.getUsername());
-  session = request.getSession();
-  ShoppingCart sc = (ShoppingCart) session.getAttribute("cart");
-  ArrayList<TransactionLineItem> item_list = new ArrayList<TransactionLineItem>();
-  if (sc != null)
-  	 item_list = sc.getProducts();
   %>
+  
+  
        <nav class="navbar navbar-custom">
             <div class="container-fluid">
-                <!--  div class="dropdown navbar-header">
+                <!--div class="dropdown navbar-header">
                     <button class="menu-button dropdown-toggle" type="button" id="categories" data-toggle="dropdown" ><span class="glyphicon glyphicon-align-justify"></button>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="categories">
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="index.jsp">Dashboard</a></li>
@@ -139,62 +123,12 @@
 
    <div class="container">
       <div class="row">
-        
-      <div class="span9 center">
-               <div class="hero-unit">
-                <h3>Shopping Cart</h3>
-                <hr>
-                <% 
-                   if(item_list.size() == 0)
-                    out.println("<p>You haven't added any items to the cart yet!</p>");
-                   else
-                   {
-                 out.println("<div class=\"container pagecontent\">");
-                    out.println("<div class=\"row\">");
-                      out.println("<table style=\"padding-left:0px; padding-right:0px;\" class=\"table-bordered table-revieworders col-md-8\">");
-                        out.println("<thead>");
-                         out.println(" <tr>");
-                           out.println(" <td class=\"col-sm-3\">Product</td>");
-                           out.println("<td class=\"col-sm-1\">Qty</td>");
-                            out.println("<td class=\"col-sm-2\">Unit Price</td>");
-                            out.println("<td class=\"col-sm-2\"></td>");
-                          out.println("</tr>");
-                        out.println("</thead>");
-                        out.println("<tbody>");
-                        for (int i = 0; i < item_list.size(); i++)
-                        {
-                        	Product product = Model.getProductById(item_list.get(i).getProductId());
-                          out.println("<tr>");
-                          	out.println("<td>" + product.getName() + "</td>");
-                          	out.println("<td>" + item_list.get(i).getQuantity() + "</td>");
-                            out.println("<td>" + item_list.get(i).getUnitPrice() +"</td>");
-                            //out.println("<form name=\"removeItem\" method=\"POST\" action=\"RemoveItemFromCart\">");
-                            //out.println("<input type=\"hidden\" name=\"prod_id\" value=\"" + product.getId() + "\"></form>");
-							out.println("<td><a href=\"RemoveFromShoppingCart?prod_id=" + product.getId() + "\">Remove</a></td>");
-                        }
-                         out.println(" </tr>");
-                         
-                         out.println(" <tfoot>");
-                         	out.println("<tr>");
-                         		out.println("<td align=center colspan=2><b>Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td><td><b> " +  sc.getTotal() + "</b></td>");
-                         	out.println("</tr>");
-                         out.println(" </tfoot>");
-                         
-                        out.println("</tbody>");
-                      out.println("</table>");
-                    out.println("</div> ");
-                  out.println("</div>");
-                   }
-                 %>
-                <br>
-                <form action="Checkout" method="post">
-                	<button class="btn-primary btn-right btn-action" type = "submit"><a style="color:white">Checkout</a></button>
-                </form>
-              </div>
+      		<h2>Error:</h2>
+        	<h3>You are unauthorized to access this page or perform this activity.</h3>
+            <h4><a style="color:orange" href="index.jsp">Back</a></h4>
+         </div>
       </div><!--/span-->
-    </div>
-  </div>
-
+     
 
 
 

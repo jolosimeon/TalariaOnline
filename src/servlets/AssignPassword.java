@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import model.Model;
+import objects.User;
 
 /**
  * Servlet implementation class AssignPassword
@@ -36,8 +37,15 @@ public class AssignPassword extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Model.assignTempPassword(request.getParameter("username"), request.getParameter("pw"));
-        response.sendRedirect("assign-pw.jsp");
+		User requester = (User) request.getSession().getAttribute("user");
+		
+		if (Model.checkAuthentication(requester.getUsername(), "assignpassword")) {
+			Model.assignTempPassword(request.getParameter("username"), request.getParameter("pw"), requester.getUsername());
+	        response.sendRedirect("assign-pw.jsp");
+		} else {
+			response.sendRedirect("errorpage.jsp");
+		}
+
 	}
 
 }

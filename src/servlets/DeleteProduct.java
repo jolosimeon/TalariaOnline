@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import model.Model;
+import objects.User;
 
 /**
  * Servlet implementation class DeleteProduct
@@ -36,8 +37,14 @@ public class DeleteProduct extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Model.deleteProduct(Integer.valueOf(request.getParameter("prod_id")));
-		response.sendRedirect("index.jsp");
+		User requester = (User) request.getSession().getAttribute("user");
+		
+		if (Model.checkAuthentication(request.getParameter("username"), "review")) {
+			Model.deleteProduct(Integer.valueOf(request.getParameter("prod_id")), requester.getUsername());
+			response.sendRedirect("index.jsp");
+		} else {
+			response.sendRedirect("errorpage.jsp");
+		}
 		
 	}
 
